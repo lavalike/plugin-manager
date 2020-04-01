@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.wangzhen.plugin.PluginManager;
-import com.wangzhen.plugin.callback.OnLoadCallback;
+import com.wangzhen.plugin.callback.PluginLoadCallback;
 
 /**
  * MainActivity
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadPluginOne(View view) {
         mTvMsg.setText("Plugin Load Status:\n");
-        PluginManager.getInstance().loadAsset("plugin/", "plugin-one.apk", new OnLoadCallback() {
+        PluginManager.getInstance().loadAsset("plugin/", "plugin-one.apk", new PluginLoadCallback() {
             @Override
             public void onSuccess() {
                 mTvMsg.append("plugin-one.apk load success");
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadPluginTwo(View view) {
         mTvMsg.setText("Plugin Load Status:\n");
-        PluginManager.getInstance().loadAsset("plugin/", "plugin-two.apk", new OnLoadCallback() {
+        PluginManager.getInstance().loadAsset("plugin/", "plugin-two.apk", new PluginLoadCallback() {
             @Override
             public void onSuccess() {
                 mTvMsg.append("plugin-two.apk load success");

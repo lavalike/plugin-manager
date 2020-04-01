@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 
 /**
- * IPluginManager
+ * Plugin
  * Created by wangzhen on 2020/4/1.
  */
-public interface IPluginManager {
+public interface Plugin {
     /**
      * init plugin manager
      *
@@ -30,7 +30,7 @@ public interface IPluginManager {
      * @param pluginName pluginName
      * @param callback   callback
      */
-    void loadAsset(String pluginPath, String pluginName, OnLoadCallback callback);
+    void loadAsset(String pluginPath, String pluginName, PluginLoadCallback callback);
 
     /**
      * load apk from local path
@@ -45,7 +45,7 @@ public interface IPluginManager {
      * @param path     path
      * @param callback callback
      */
-    void load(String path, OnLoadCallback callback);
+    void load(String path, PluginLoadCallback callback);
 
     /**
      * get classloader of plugin

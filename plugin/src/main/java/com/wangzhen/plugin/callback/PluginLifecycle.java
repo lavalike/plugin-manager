@@ -1,4 +1,4 @@
-package com.wangzhen.plugin.proxy;
+package com.wangzhen.plugin.callback;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.os.Bundle;
  * plugin lifecycle callbacks
  * Created by wangzhen on 2020/4/1.
  */
-public interface Plugin {
+public interface PluginLifecycle {
     void attach(Activity activity);
 
     void onCreate(Bundle bundle);

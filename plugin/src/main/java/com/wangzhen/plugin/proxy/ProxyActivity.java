@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.wangzhen.plugin.PluginManager;
+import com.wangzhen.plugin.callback.PluginLifecycle;
 import com.wangzhen.plugin.common.Key;
 
 /**
@@ -16,7 +17,7 @@ import com.wangzhen.plugin.common.Key;
  */
 public class ProxyActivity extends AppCompatActivity {
 
-    private Plugin iPlugin;
+    private PluginLifecycle mLifecycle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,11 +30,11 @@ public class ProxyActivity extends AppCompatActivity {
         try {
             Class<?> pluginClass = PluginManager.getInstance().getPluginClassloader().loadClass(className);
             Object instance = pluginClass.newInstance();
-            if (instance instanceof Plugin) {
-                iPlugin = (Plugin) instance;
-                iPlugin.attach(this);
+            if (instance instanceof PluginLifecycle) {
+                mLifecycle = (PluginLifecycle) instance;
+                mLifecycle.attach(this);
                 Bundle bundle = new Bundle();
-                iPlugin.onCreate(bundle);
+                mLifecycle.onCreate(bundle);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -46,31 +47,31 @@ public class ProxyActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        iPlugin.onStart();
+        mLifecycle.onStart();
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        iPlugin.onResume();
+        mLifecycle.onResume();
         super.onResume();
     }
 
     @Override
     protected void onRestart() {
-        iPlugin.onRestart();
+        mLifecycle.onRestart();
         super.onRestart();
     }
 
     @Override
     protected void onPause() {
-        iPlugin.onPause();
+        mLifecycle.onPause();
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        iPlugin.onStop();
+        mLifecycle.onStop();
         super.onStop();
     }
 

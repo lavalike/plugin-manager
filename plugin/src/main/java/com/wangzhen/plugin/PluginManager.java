@@ -9,8 +9,8 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.wangzhen.plugin.callback.IPluginManager;
-import com.wangzhen.plugin.callback.OnLoadCallback;
+import com.wangzhen.plugin.callback.Plugin;
+import com.wangzhen.plugin.callback.PluginLoadCallback;
 import com.wangzhen.plugin.common.Key;
 import com.wangzhen.plugin.helper.CopyUtils;
 import com.wangzhen.plugin.helper.PathUtils;
@@ -26,20 +26,20 @@ import dalvik.system.DexClassLoader;
  * plugin-manager framework lite.
  * Created by wangzhen on 2020/4/1.
  */
-public final class PluginManager implements IPluginManager {
+public final class PluginManager implements Plugin {
     private Context mContext;
-    private static IPluginManager sInstance = new PluginManager();
+    private static Plugin sInstance = new PluginManager();
     private DexClassLoader mPluginDexClassloader;
     private Resources mPluginResources;
     private PackageInfo mPackageArchiveInfo;
     private String mPath;
-    private OnLoadCallback mCallback;
+    private PluginLoadCallback mCallback;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private PluginManager() {
     }
 
-    public static IPluginManager getInstance() {
+    public static Plugin getInstance() {
         return sInstance;
     }
 
@@ -54,7 +54,7 @@ public final class PluginManager implements IPluginManager {
     }
 
     @Override
-    public void loadAsset(String pluginPath, String pluginName, OnLoadCallback callback) {
+    public void loadAsset(String pluginPath, String pluginName, PluginLoadCallback callback) {
         File plugin = PathUtils.getPluginFile(mContext, pluginName);
         if (plugin.exists()) {
             boolean ignore = plugin.delete();
@@ -74,7 +74,7 @@ public final class PluginManager implements IPluginManager {
     }
 
     @Override
-    public void load(String path, OnLoadCallback callback) {
+    public void load(String path, PluginLoadCallback callback) {
         mCallback = callback;
         mPath = path;
         Executors.newCachedThreadPool().submit(new Runnable() {

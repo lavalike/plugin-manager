@@ -3,21 +3,23 @@ package com.wangzhen.plugin.base;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.wangzhen.plugin.proxy.Plugin;
+import com.wangzhen.plugin.callback.PluginLifecycle;
 
 /**
  * all activities in plugin must extend this
  * Created by wangzhen on 2020/4/1.
  */
-public class PluginBaseActivity extends AppCompatActivity implements Plugin {
+public class PluginBaseActivity extends AppCompatActivity implements PluginLifecycle {
     private Activity mProxy;
 
     @Override
@@ -133,5 +135,30 @@ public class PluginBaseActivity extends AppCompatActivity implements Plugin {
             return;
         }
         super.startActivity(intent);
+    }
+
+    @Override
+    public void startActivity(Intent intent, @Nullable Bundle options) {
+        if (mProxy != null) {
+            mProxy.startActivity(intent, options);
+            return;
+        }
+        super.startActivity(intent, options);
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        if (mProxy != null) {
+            return mProxy.getClassLoader();
+        }
+        return super.getClassLoader();
+    }
+
+    @Override
+    public Resources getResources() {
+        if (mProxy != null) {
+            return mProxy.getResources();
+        }
+        return super.getResources();
     }
 }
