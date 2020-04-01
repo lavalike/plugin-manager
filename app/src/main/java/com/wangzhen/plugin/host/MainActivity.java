@@ -2,10 +2,13 @@ package com.wangzhen.plugin.host;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.wangzhen.plugin.PluginManager;
+import com.wangzhen.plugin.callback.OnLoadCallback;
 
 /**
  * MainActivity
@@ -13,20 +16,47 @@ import com.wangzhen.plugin.PluginManager;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private TextView mTvMsg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTvMsg = findViewById(R.id.tv_msg);
         PluginManager.getInstance().init(this);
     }
 
     public void loadPluginOne(View view) {
-        PluginManager.getInstance().loadAsset("plugin/", "plugin-one.apk");
-        PluginManager.getInstance().startActivity();
+        mTvMsg.setText("Plugin Load Status:\n");
+        PluginManager.getInstance().loadAsset("plugin/", "plugin-one.apk", new OnLoadCallback() {
+            @Override
+            public void onSuccess() {
+                mTvMsg.append("plugin-one.apk load success");
+                PluginManager.getInstance().startActivity();
+            }
+
+            @Override
+            public void onFail(String error) {
+                mTvMsg.append("plugin-one.apk load fail: " + error);
+                Toast.makeText(MainActivity.this, "plugin-one load fail", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void loadPluginTwo(View view) {
-        PluginManager.getInstance().loadAsset("plugin/", "plugin-two.apk");
-        PluginManager.getInstance().startActivity();
+        mTvMsg.setText("Plugin Load Status:\n");
+        PluginManager.getInstance().loadAsset("plugin/", "plugin-two.apk", new OnLoadCallback() {
+            @Override
+            public void onSuccess() {
+                mTvMsg.append("plugin-two.apk load success");
+                PluginManager.getInstance().startActivity();
+            }
+
+            @Override
+            public void onFail(String error) {
+                mTvMsg.append("plugin-two.apk load fail: " + error);
+                Toast.makeText(MainActivity.this, "plugin-two load fail", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

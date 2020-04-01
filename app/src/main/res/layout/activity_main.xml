@@ -21,11 +21,19 @@
         android:layout_marginTop="15dp"
         android:onClick="loadPluginOne"
         android:text="加载插件一" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:onClick="loadPluginTwo"
         android:text="加载插件二" />
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        tools:text="加载信息：" />
 
 </LinearLayout>

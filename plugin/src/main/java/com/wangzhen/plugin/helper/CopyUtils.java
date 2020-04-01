@@ -35,7 +35,7 @@ public class CopyUtils {
             }
             return true;
         } catch (Exception ignore) {
-            ignore.printStackTrace();
+
         } finally {
             IOUtils.close(stream, inStream, outStream);
         }

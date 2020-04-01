@@ -24,11 +24,28 @@ public interface IPluginManager {
     void loadAsset(String pluginPath, String pluginName);
 
     /**
+     * load apk from asset by name with callback
+     *
+     * @param pluginPath pluginPath
+     * @param pluginName pluginName
+     * @param callback   callback
+     */
+    void loadAsset(String pluginPath, String pluginName, OnLoadCallback callback);
+
+    /**
      * load apk from local path
      *
      * @param path path
      */
     void load(String path);
+
+    /**
+     * load apk from local path with callback
+     *
+     * @param path     path
+     * @param callback callback
+     */
+    void load(String path, OnLoadCallback callback);
 
     /**
      * get classloader of plugin
