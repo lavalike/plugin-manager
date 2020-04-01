@@ -8,13 +8,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.wangzhen.plugin.proxy.Plugin;
 
 /**
  * all activities in plugin must extend this
  * Created by wangzhen on 2020/4/1.
  */
-public class PluginBaseActivity extends Activity implements Plugin {
+public class PluginBaseActivity extends AppCompatActivity implements Plugin {
     private Activity mProxy;
 
     @Override
