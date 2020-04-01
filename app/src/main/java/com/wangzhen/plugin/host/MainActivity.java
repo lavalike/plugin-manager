@@ -20,8 +20,13 @@ public class MainActivity extends AppCompatActivity {
         PluginManager.getInstance().init(this);
     }
 
-    public void openScheme(View view) {
+    public void loadPluginOne(View view) {
         PluginManager.getInstance().loadAsset("plugin/", "plugin-one.apk");
+        PluginManager.getInstance().startActivity();
+    }
+
+    public void loadPluginTwo(View view) {
+        PluginManager.getInstance().loadAsset("plugin/", "plugin-two.apk");
         PluginManager.getInstance().startActivity();
     }
 }
