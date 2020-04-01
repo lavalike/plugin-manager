@@ -1,6 +1,7 @@
 package com.wangzhen.plugin.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -123,5 +124,14 @@ public class PluginBaseActivity extends AppCompatActivity implements Plugin {
             return mProxy.getApplicationInfo();
         }
         return super.getApplicationInfo();
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        if (mProxy != null) {
+            mProxy.startActivity(intent);
+            return;
+        }
+        super.startActivity(intent);
     }
 }

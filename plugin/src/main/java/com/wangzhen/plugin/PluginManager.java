@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
+import com.wangzhen.plugin.callback.IPluginManager;
 import com.wangzhen.plugin.common.Key;
 import com.wangzhen.plugin.helper.CopyUtils;
 import com.wangzhen.plugin.helper.PathUtils;
@@ -19,12 +20,12 @@ import java.lang.reflect.Method;
 import dalvik.system.DexClassLoader;
 
 /**
- * PluginManager
+ * plugin-manager framework lite.
  * Created by wangzhen on 2020/4/1.
  */
-public final class PluginManager {
+public final class PluginManager implements IPluginManager {
     private Context mContext;
-    private static PluginManager sInstance = new PluginManager();
+    private static IPluginManager sInstance = new PluginManager();
     private DexClassLoader mPluginDexClassloader;
     private Resources mPluginResources;
     private PackageInfo mPackageArchiveInfo;
@@ -32,10 +33,16 @@ public final class PluginManager {
     private PluginManager() {
     }
 
-    public static PluginManager getInstance() {
+    public static IPluginManager getInstance() {
         return sInstance;
     }
 
+    /**
+     * init plugin manager
+     *
+     * @param context application context
+     */
+    @Override
     public void init(Context context) {
         this.mContext = context.getApplicationContext();
     }
@@ -46,6 +53,7 @@ public final class PluginManager {
      * @param pluginPath pluginPath
      * @param pluginName pluginName
      */
+    @Override
     public void loadAsset(String pluginPath, String pluginName) {
         File plugin = PathUtils.getPluginFile(mContext, pluginName);
         if (plugin.exists()) {
@@ -61,6 +69,7 @@ public final class PluginManager {
      *
      * @param path path
      */
+    @Override
     public void load(String path) {
         createClassloader(path);
         addAssetPath(path);
@@ -104,6 +113,7 @@ public final class PluginManager {
      *
      * @return classloader
      */
+    @Override
     public ClassLoader getPluginClassloader() {
         return mPluginDexClassloader;
     }
@@ -113,6 +123,7 @@ public final class PluginManager {
      *
      * @return resources
      */
+    @Override
     public Resources getPluginResources() {
         return mPluginResources;
     }
@@ -122,6 +133,7 @@ public final class PluginManager {
      *
      * @param className class name
      */
+    @Override
     public void startActivity(String className) {
         Intent intent = new Intent(mContext, ProxyActivity.class);
         intent.putExtra(Key.CLASS_NAME, className);
@@ -131,6 +143,7 @@ public final class PluginManager {
     /**
      * start default main activity
      */
+    @Override
     public void startActivity() {
         if (mPackageArchiveInfo != null) {
             startActivity(mPackageArchiveInfo.activities[0].name);
