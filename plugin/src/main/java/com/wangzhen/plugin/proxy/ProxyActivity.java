@@ -1,7 +1,11 @@
 package com.wangzhen.plugin.proxy;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -18,11 +22,47 @@ import com.wangzhen.plugin.common.Key;
 public class ProxyActivity extends AppCompatActivity {
 
     private PluginLifecycle mLifecycle;
+    private Resources.Theme mTheme;
+    private ActivityInfo mActivityInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        compat();
         handleProxy();
+    }
+
+    private void compat() {
+        PackageInfo packageInfo = PluginManager.getInstance().getPluginPackageInfo();
+        String className = packageInfo.activities[0].name;
+        int defaultTheme = packageInfo.applicationInfo.theme;
+        for (ActivityInfo activity : packageInfo.activities) {
+            if (activity.name.equals(className)) {
+                mActivityInfo = activity;
+                if (mActivityInfo.theme == 0) {
+                    if (defaultTheme != 0) {
+                        mActivityInfo.theme = defaultTheme;
+                    } else {
+                        if (Build.VERSION.SDK_INT >= 14) {
+                            mActivityInfo.theme = android.R.style.Theme_DeviceDefault;
+                        } else {
+                            mActivityInfo.theme = android.R.style.Theme;
+                        }
+                    }
+                }
+            }
+        }
+        //Theme.
+        setTheme(mActivityInfo.theme);
+
+        Resources.Theme superTheme = getTheme();
+        mTheme = PluginManager.getInstance().getPluginResources().newTheme();
+        mTheme.setTo(superTheme);
+        try {
+            mTheme.applyStyle(mActivityInfo.theme, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleProxy() {
@@ -93,5 +133,16 @@ public class ProxyActivity extends AppCompatActivity {
     public Resources getResources() {
         Resources resources = PluginManager.getInstance().getPluginResources();
         return resources != null ? resources : super.getResources();
+    }
+
+    @Override
+    public AssetManager getAssets() {
+        AssetManager assets = PluginManager.getInstance().getAssets();
+        return assets != null ? assets : super.getAssets();
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 }

@@ -2,6 +2,7 @@ package com.wangzhen.plugin.callback;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 
 /**
@@ -80,4 +81,11 @@ public interface Plugin {
      * start the first activity declared in AndroidManifest.xml
      */
     void startActivity();
+
+    /**
+     * get plugin asset manager
+     *
+     * @return asset manager
+     */
+    AssetManager getAssets();
 }

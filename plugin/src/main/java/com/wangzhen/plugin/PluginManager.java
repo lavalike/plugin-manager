@@ -35,6 +35,7 @@ public final class PluginManager implements Plugin {
     private String mPath;
     private PluginLoadCallback mCallback;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private AssetManager mAssetManager;
 
     private PluginManager() {
     }
@@ -87,12 +88,11 @@ public final class PluginManager implements Plugin {
 
     private void applyPlugin(String path) {
         mPluginDexClassloader = new DexClassLoader(path, PathUtils.getDexOutputDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
-        AssetManager assetManager = null;
         try {
-            assetManager = AssetManager.class.newInstance();
+            mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
-            method.invoke(assetManager, path);
-            mPluginResources = new Resources(assetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
+            method.invoke(mAssetManager, path);
+            mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
             mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
             runOnUiThread(new Runnable() {
                 @Override
@@ -141,6 +141,11 @@ public final class PluginManager implements Plugin {
         if (mPackageArchiveInfo != null) {
             startActivity(mPackageArchiveInfo.activities[0].name);
         }
+    }
+
+    @Override
+    public AssetManager getAssets() {
+        return mAssetManager;
     }
 
     private void runOnUiThread(Runnable runnable) {

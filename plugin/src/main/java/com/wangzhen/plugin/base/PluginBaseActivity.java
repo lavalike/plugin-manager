@@ -14,7 +14,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.wangzhen.plugin.callback.PluginLifecycle;
 
@@ -22,7 +21,7 @@ import com.wangzhen.plugin.callback.PluginLifecycle;
  * all activities in plugin must extend this
  * Created by wangzhen on 2020/4/1.
  */
-public class PluginBaseActivity extends AppCompatActivity implements PluginLifecycle {
+public class PluginBaseActivity extends Activity implements PluginLifecycle {
     private Activity mProxy;
 
     @Override
