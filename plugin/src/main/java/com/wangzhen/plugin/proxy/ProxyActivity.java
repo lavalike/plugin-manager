@@ -28,15 +28,12 @@ public class ProxyActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        compat();
+        compat();
         handleProxy();
     }
 
     private void compat() {
         PackageInfo packageInfo = PluginManager.getInstance().getPluginPackageInfo();
-        if (packageInfo == null) {
-            return;
-        }
         String className = packageInfo.activities[0].name;
         int defaultTheme = packageInfo.applicationInfo.theme;
         for (ActivityInfo activity : packageInfo.activities) {
@@ -116,6 +113,12 @@ public class ProxyActivity extends Activity {
     protected void onStop() {
         mLifecycle.onStop();
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mLifecycle.onDestroy();
+        super.onDestroy();
     }
 
     @Override

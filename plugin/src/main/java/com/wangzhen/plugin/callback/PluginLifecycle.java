@@ -21,4 +21,6 @@ public interface PluginLifecycle {
     void onPause();
 
     void onStop();
+
+    void onDestroy();
 }

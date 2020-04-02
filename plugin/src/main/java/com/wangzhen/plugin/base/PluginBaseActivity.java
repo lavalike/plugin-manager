@@ -22,7 +22,7 @@ import com.wangzhen.plugin.callback.PluginLifecycle;
  * Created by wangzhen on 2020/4/1.
  */
 public class PluginBaseActivity extends Activity implements PluginLifecycle {
-    private Activity mProxy;
+    protected Activity mProxy;
 
     @Override
     public void attach(Activity activity) {
@@ -34,6 +34,10 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
         if (mProxy == null) {
             super.onCreate(saveInstanceState);
         }
+    }
+
+    public Context getActivity() {
+        return mProxy == null ? this : mProxy;
     }
 
     @Override
@@ -72,7 +76,7 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if (mProxy == null) {
             super.onDestroy();
         }
