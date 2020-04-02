@@ -72,6 +72,13 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
     }
 
     @Override
+    protected void onDestroy() {
+        if (mProxy == null) {
+            super.onDestroy();
+        }
+    }
+
+    @Override
     public void setContentView(int layoutResID) {
         if (mProxy != null) {
             mProxy.setContentView(layoutResID);
@@ -195,5 +202,14 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
             return mProxy.getBaseContext();
         }
         return super.getBaseContext();
+    }
+
+    @Override
+    public void finish() {
+        if (mProxy != null) {
+            mProxy.finish();
+            return;
+        }
+        super.finish();
     }
 }

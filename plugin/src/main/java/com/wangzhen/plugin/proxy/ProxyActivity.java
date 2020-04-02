@@ -1,5 +1,6 @@
 package com.wangzhen.plugin.proxy;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
@@ -9,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.wangzhen.plugin.PluginManager;
 import com.wangzhen.plugin.callback.PluginLifecycle;
@@ -19,7 +19,7 @@ import com.wangzhen.plugin.common.Key;
  * ProxyActivity
  * Created by wangzhen on 2020/4/1.
  */
-public class ProxyActivity extends AppCompatActivity {
+public class ProxyActivity extends Activity {
 
     private PluginLifecycle mLifecycle;
     private Resources.Theme mTheme;
@@ -34,6 +34,9 @@ public class ProxyActivity extends AppCompatActivity {
 
     private void compat() {
         PackageInfo packageInfo = PluginManager.getInstance().getPluginPackageInfo();
+        if (packageInfo == null) {
+            return;
+        }
         String className = packageInfo.activities[0].name;
         int defaultTheme = packageInfo.applicationInfo.theme;
         for (ActivityInfo activity : packageInfo.activities) {
@@ -143,6 +146,6 @@ public class ProxyActivity extends AppCompatActivity {
 
     @Override
     public Resources.Theme getTheme() {
-        return super.getTheme();
+        return mTheme != null ? mTheme : super.getTheme();
     }
 }
