@@ -3,6 +3,11 @@
     package="com.wangzhen.plugin">
 
     <application>
+        <provider
+            android:name=".provider.ContextProvider"
+            android:authorities="${applicationId}.contextprovider"
+            android:exported="false" />
+
         <activity android:name=".proxy.ProxyActivity" />
         <activity android:name=".base.PluginBaseActivity" />
     </application>

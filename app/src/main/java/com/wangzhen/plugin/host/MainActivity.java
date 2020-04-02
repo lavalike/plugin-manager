@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTvMsg = findViewById(R.id.tv_msg);
-        PluginManager.getInstance().init(this);
     }
 
     public void loadPluginOne(View view) {

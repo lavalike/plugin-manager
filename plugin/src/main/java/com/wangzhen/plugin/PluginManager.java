@@ -14,6 +14,7 @@ import com.wangzhen.plugin.callback.PluginLoadCallback;
 import com.wangzhen.plugin.common.Key;
 import com.wangzhen.plugin.helper.CopyUtils;
 import com.wangzhen.plugin.helper.PathUtils;
+import com.wangzhen.plugin.provider.ContextProvider;
 import com.wangzhen.plugin.proxy.ProxyActivity;
 
 import java.io.File;
@@ -28,7 +29,7 @@ import dalvik.system.DexClassLoader;
  */
 public final class PluginManager implements Plugin {
     private Context mContext;
-    private static Plugin sInstance = new PluginManager();
+    private static Plugin sInstance;
     private DexClassLoader mPluginDexClassloader;
     private Resources mPluginResources;
     private PackageInfo mPackageArchiveInfo;
@@ -37,16 +38,16 @@ public final class PluginManager implements Plugin {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AssetManager mAssetManager;
 
+    static {
+        sInstance = new PluginManager();
+    }
+
     private PluginManager() {
+        mContext = ContextProvider.sContext;
     }
 
     public static Plugin getInstance() {
         return sInstance;
-    }
-
-    @Override
-    public void init(Context context) {
-        this.mContext = context.getApplicationContext();
     }
 
     @Override

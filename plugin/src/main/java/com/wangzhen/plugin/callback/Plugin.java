@@ -1,6 +1,5 @@
 package com.wangzhen.plugin.callback;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -10,13 +9,6 @@ import android.content.res.Resources;
  * Created by wangzhen on 2020/4/1.
  */
 public interface Plugin {
-    /**
-     * init plugin manager
-     *
-     * @param context application context
-     */
-    void init(Context context);
-
     /**
      * load apk from asset by name
      *
