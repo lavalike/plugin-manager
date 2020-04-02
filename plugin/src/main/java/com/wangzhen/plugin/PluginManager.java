@@ -125,6 +125,11 @@ public final class PluginManager implements Plugin {
     }
 
     @Override
+    public PackageInfo getPluginPackageInfo() {
+        return mPackageArchiveInfo;
+    }
+
+    @Override
     public void startActivity(String className) {
         Intent intent = new Intent(mContext, ProxyActivity.class);
         intent.putExtra(Key.CLASS_NAME, className);

@@ -1,15 +1,18 @@
 package com.wangzhen.plugin.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -160,5 +163,38 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginLifec
             return mProxy.getResources();
         }
         return super.getResources();
+    }
+
+    @Override
+    public String getPackageName() {
+        if (mProxy != null) {
+            return mProxy.getPackageName();
+        }
+        return super.getPackageName();
+    }
+
+    @NonNull
+    @Override
+    public LayoutInflater getLayoutInflater() {
+        if (mProxy != null) {
+            return mProxy.getLayoutInflater();
+        }
+        return super.getLayoutInflater();
+    }
+
+    @Override
+    public Object getSystemService(@NonNull String name) {
+        if (mProxy != null) {
+            return mProxy.getSystemService(name);
+        }
+        return super.getSystemService(name);
+    }
+
+    @Override
+    public Context getBaseContext() {
+        if (mProxy != null) {
+            return mProxy.getBaseContext();
+        }
+        return super.getBaseContext();
     }
 }

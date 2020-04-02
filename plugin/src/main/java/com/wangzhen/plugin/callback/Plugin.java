@@ -1,6 +1,7 @@
 package com.wangzhen.plugin.callback;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 
 /**
@@ -60,6 +61,13 @@ public interface Plugin {
      * @return resources
      */
     Resources getPluginResources();
+
+    /**
+     * get package info for plugin
+     *
+     * @return package info
+     */
+    PackageInfo getPluginPackageInfo();
 
     /**
      * start activity according to given class name
