@@ -1,6 +1,5 @@
 package com.wangzhen.plugin.proxy;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -16,7 +15,7 @@ import com.wangzhen.plugin.common.Key;
  * ProxyActivity
  * Created by wangzhen on 2020/4/1.
  */
-public class ProxyActivity extends Activity {
+public class ProxyActivity extends AppCompatActivity {
 
     private PluginLifecycle mLifecycle;
 
