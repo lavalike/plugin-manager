@@ -8,12 +8,13 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.wangzhen.plugin.callback.Plugin;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
 import com.wangzhen.plugin.common.Key;
 import com.wangzhen.plugin.helper.CopyUtils;
-import com.wangzhen.plugin.helper.PathUtils;
+import com.wangzhen.plugin.helper.FileUtils;
 import com.wangzhen.plugin.provider.ContextProvider;
 import com.wangzhen.plugin.proxy.ProxyActivity;
 
@@ -51,17 +52,24 @@ public final class PluginManager implements Plugin {
     }
 
     @Override
-    public void loadAsset(String pluginPath, String pluginName) {
-        loadAsset(pluginPath, pluginName, null);
+    public void loadAsset(String path) {
+        loadAsset(path, null);
     }
 
     @Override
-    public void loadAsset(String pluginPath, String pluginName, PluginLoadCallback callback) {
-        File plugin = PathUtils.getPluginFile(mContext, pluginName);
+    public void loadAsset(String path, PluginLoadCallback callback) {
+        String pluginName = FileUtils.getFileName(path);
+        if (TextUtils.isEmpty(pluginName)) {
+            if (callback != null) {
+                callback.onFail("wrong plugin name");
+            }
+            return;
+        }
+        File plugin = FileUtils.getPluginFile(mContext, pluginName);
         if (plugin.exists()) {
             boolean ignore = plugin.delete();
         }
-        if (CopyUtils.copyAsset(mContext, pluginPath + pluginName, plugin.getAbsolutePath())) {
+        if (CopyUtils.copyAsset(mContext, path, plugin.getAbsolutePath())) {
             load(plugin.getAbsolutePath(), callback);
         } else {
             if (callback != null) {
@@ -88,7 +96,7 @@ public final class PluginManager implements Plugin {
     }
 
     private void applyPlugin(String path) {
-        mPluginDexClassloader = new DexClassLoader(path, PathUtils.getDexOutputDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
+        mPluginDexClassloader = new DexClassLoader(path, FileUtils.getDexOutputDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
         try {
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);

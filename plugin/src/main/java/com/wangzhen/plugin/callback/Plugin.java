@@ -10,21 +10,19 @@ import android.content.res.Resources;
  */
 public interface Plugin {
     /**
-     * load apk from asset by name
+     * load apk from asset
      *
-     * @param pluginPath pluginPath
-     * @param pluginName pluginName
+     * @param path pluginPath
      */
-    void loadAsset(String pluginPath, String pluginName);
+    void loadAsset(String path);
 
     /**
-     * load apk from asset by name with callback
+     * load apk from asset with callback
      *
-     * @param pluginPath pluginPath
-     * @param pluginName pluginName
-     * @param callback   callback
+     * @param path     pluginPath
+     * @param callback callback
      */
-    void loadAsset(String pluginPath, String pluginName, PluginLoadCallback callback);
+    void loadAsset(String path, PluginLoadCallback callback);
 
     /**
      * load apk from local path
