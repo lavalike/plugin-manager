@@ -10,6 +10,19 @@ import java.io.File;
  * Created by wangzhen on 2020/4/1.
  */
 public class FileUtils {
+
+    private static final String PLUGIN_DIR = "plugin";
+
+    /**
+     * get internal plugin path : (/data/data/{package}/plugin/)
+     *
+     * @param context context
+     * @return internal path
+     */
+    public static String getInternalPluginPath(Context context) {
+        return context.getDir(PLUGIN_DIR, Context.MODE_PRIVATE).getAbsolutePath();
+    }
+
     /**
      * get plugin file
      *
@@ -17,7 +30,7 @@ public class FileUtils {
      * @return plugin file
      */
     public static File getPluginFile(Context context, String pluginName) {
-        return new File(context.getDir("plugin", Context.MODE_PRIVATE), pluginName);
+        return new File(getInternalPluginPath(context), pluginName);
     }
 
     /**

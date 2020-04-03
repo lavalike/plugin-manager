@@ -19,15 +19,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:onClick="loadPluginOne"
-        android:text="加载插件一" />
+        android:onClick="loadAssetPlugin"
+        android:text="加载asset插件" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:onClick="loadPluginTwo"
-        android:text="加载插件二" />
+        android:onClick="loadNetPlugin"
+        android:text="加载网络插件" />
 
     <TextView
         android:id="@+id/tv_msg"
