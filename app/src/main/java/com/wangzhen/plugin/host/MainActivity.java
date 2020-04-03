@@ -18,6 +18,8 @@ import com.wangzhen.plugin.PluginManager;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
 import com.wangzhen.plugin.helper.FileUtils;
 
+import java.io.File;
+
 /**
  * MainActivity
  * Created by wangzhen on 2020/4/1.
@@ -55,17 +57,23 @@ public class MainActivity extends AppCompatActivity {
             if (PackageManager.PERMISSION_GRANTED != checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
             } else {
-                downloadAndInstall();
+                downloadAndLoad();
             }
         } else {
-            downloadAndInstall();
+            downloadAndLoad();
         }
     }
 
-    private void downloadAndInstall() {
-        DownloadClient.get().enqueue(new ParamsBody.Builder()
-                .url("http://192.168.188.199:8080/wangzhen/plugin/apk/plugin-two.apk")
-                .dir(FileUtils.getInternalPluginPath(this))
+    private void downloadAndLoad() {
+        String url = "http://192.168.188.199:8080/wangzhen/plugin/apk/plugin-two.apk";
+        String path = FileUtils.getInternalPluginPath(this);
+        File file;
+        if ((file = new File(path, FileUtils.getFileName(url))).exists()) {
+            mTvMsg.append("plugin exists, load from local cache\n");
+            loadPlugin(file.getAbsolutePath());
+            return;
+        }
+        DownloadClient.get().enqueue(new ParamsBody.Builder().url(url).dir(path)
                 .callback(new OnDownloadCallback() {
                     @Override
                     public void onLoading(int progress) {
@@ -75,18 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String path) {
                         mTvMsg.append("plugin download success\n");
-                        PluginManager.getInstance().load(path, new PluginLoadCallback() {
-                            @Override
-                            public void onSuccess() {
-                                mTvMsg.append("plugin-two.apk load success\n");
-                                PluginManager.getInstance().startActivity();
-                            }
-
-                            @Override
-                            public void onFail(String error) {
-                                mTvMsg.append("plugin-two.apk load fail: " + error + "\n");
-                            }
-                        });
+                        loadPlugin(path);
                     }
 
                     @Override
@@ -97,12 +94,27 @@ public class MainActivity extends AppCompatActivity {
                 .build());
     }
 
+    private void loadPlugin(String path) {
+        PluginManager.getInstance().load(path, new PluginLoadCallback() {
+            @Override
+            public void onSuccess() {
+                mTvMsg.append("plugin load success\n");
+                PluginManager.getInstance().startActivity();
+            }
+
+            @Override
+            public void onFail(String error) {
+                mTvMsg.append("plugin load fail: " + error + "\n");
+            }
+        });
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (REQUEST_CODE == requestCode) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadAndInstall();
+                downloadAndLoad();
             } else {
                 Toast.makeText(this, "请开启存储权限", Toast.LENGTH_SHORT).show();
             }
