@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void downloadAndLoad() {
-        String url = "http://192.168.188.199:8080/wangzhen/plugin/apk/plugin-two.apk";
+        String url = "http://192.168.188.199:8080/wangzhen/plugin/apk/app-release.apk";
         String path = FileUtils.getInternalPluginPath(this);
         File file;
         if ((file = new File(path, FileUtils.getFileName(url))).exists()) {
