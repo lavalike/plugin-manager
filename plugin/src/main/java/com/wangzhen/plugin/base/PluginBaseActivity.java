@@ -3,10 +3,12 @@ package com.wangzhen.plugin.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,5 +226,64 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
             return;
         }
         super.finish();
+    }
+
+    @Override
+    public Intent getIntent() {
+        if (mProxy != null) {
+            return mProxy.getIntent();
+        }
+        return super.getIntent();
+    }
+
+    @Override
+    public SharedPreferences getSharedPreferences(String name, int mode) {
+        if (mProxy != null) {
+            return mProxy.getSharedPreferences(name, mode);
+        }
+        return super.getSharedPreferences(name, mode);
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        if (mProxy != null) {
+            mProxy.getApplicationContext();
+        }
+        return super.getApplicationContext();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mProxy == null) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mProxy == null) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        if (mProxy == null) {
+            super.onRestoreInstanceState(savedInstanceState, persistentState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        if (mProxy == null) {
+            super.onSaveInstanceState(outState, outPersistentState);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (mProxy == null) {
+            super.onNewIntent(intent);
+        }
     }
 }
