@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.wangzhen.plugin.PluginManager;
@@ -109,5 +110,11 @@ public class ProxyActivity extends Activity {
     public AssetManager getAssets() {
         AssetManager assets = PluginManager.getInstance().getAssets();
         return assets != null ? assets : super.getAssets();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mLifecycle.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
