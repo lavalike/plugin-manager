@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mTvMsg.append("an error occur, load cache version\n");
-                        downloadAndLoad(getPreferences().getString("url", ""));
+                        loadPlugin(getPluginCache());
                     }
                 });
             }
@@ -102,16 +102,13 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 int version_code = jsonObject.getInt("version_code");
-                                String url = jsonObject.getString("url");
                                 if (version_code > getPreferences().getInt("version_code", 0)) {
                                     mTvMsg.append("new version found\n");
-                                    //更新版本
-                                    getPreferences().edit().putInt("version_code", version_code).putString("url", url).apply();
-                                    downloadAndLoad(url);
+                                    getPreferences().edit().putInt("version_code", version_code).apply();
+                                    download(jsonObject.getString("url"));
                                 } else {
-                                    //加载旧版本
                                     mTvMsg.append("no new version found, load cache version\n");
-                                    downloadAndLoad(getPreferences().getString("url", ""));
+                                    loadPlugin(getPluginCache());
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -120,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             mTvMsg.append("an error occur, load cache version\n");
-                            downloadAndLoad(getPreferences().getString("url", ""));
+                            loadPlugin(getPluginCache());
                         }
                     }
                 });
@@ -128,18 +125,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void downloadAndLoad(String url) {
+    private String getPluginCache() {
+        return getPreferences().getString("path", "");
+    }
+
+    private void download(String url) {
         if (TextUtils.isEmpty(url)) {
+            mTvMsg.append("plugin url empty, download stop.\n");
             return;
         }
-        String path = FileUtils.getInternalPluginPath(this);
-        File file;
-        if ((file = new File(path, FileUtils.getFileName(url))).exists()) {
-            mTvMsg.append("plugin exists, load cache plugin\n");
-            loadPlugin(file.getAbsolutePath());
-            return;
-        }
-        DownloadClient.get().enqueue(new ParamsBody.Builder().url(url).dir(path)
+        mTvMsg.append("download new plugin\n");
+        DownloadClient.get().enqueue(new ParamsBody.Builder().url(url).dir(FileUtils.getInternalPluginPath(this))
                 .callback(new OnDownloadCallback() {
                     @Override
                     public void onLoading(int progress) {
@@ -149,12 +145,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String path) {
                         mTvMsg.append("plugin download success\n");
+                        getPreferences().edit().putString("path", path).apply();
                         loadPlugin(path);
                     }
 
                     @Override
                     public void onFail(String err) {
-                        mTvMsg.append("plugin download fail: " + err + "\n");
+                        loadPlugin(getPluginCache());
                     }
                 })
                 .build());
@@ -165,18 +162,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadPlugin(String path) {
-        PluginManager.getInstance().load(path, new PluginLoadCallback() {
-            @Override
-            public void onSuccess() {
-                mTvMsg.append("plugin load success\n");
-                PluginManager.getInstance().startActivity();
-            }
+        File file = new File(path);
+        if (file.exists()) {
+            PluginManager.getInstance().load(path, new PluginLoadCallback() {
+                @Override
+                public void onSuccess() {
+                    mTvMsg.append("plugin load success\n");
+                    PluginManager.getInstance().startActivity();
+                }
 
-            @Override
-            public void onFail(String error) {
-                mTvMsg.append("plugin load fail: " + error + "\n");
-            }
-        });
+                @Override
+                public void onFail(String error) {
+                    mTvMsg.append("plugin load fail: " + error + "\n");
+                }
+            });
+        } else {
+            mTvMsg.append("plugin not exist, stop load.\n");
+        }
     }
 
     @Override
