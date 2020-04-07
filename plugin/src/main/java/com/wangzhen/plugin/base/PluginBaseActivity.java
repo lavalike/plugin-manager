@@ -1,6 +1,7 @@
 package com.wangzhen.plugin.base;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -145,24 +146,6 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
     }
 
     @Override
-    public void startActivity(Intent intent) {
-        if (mProxy != null) {
-            mProxy.startActivity(intent);
-            return;
-        }
-        super.startActivity(intent);
-    }
-
-    @Override
-    public void startActivity(Intent intent, @Nullable Bundle options) {
-        if (mProxy != null) {
-            mProxy.startActivity(intent, options);
-            return;
-        }
-        super.startActivity(intent, options);
-    }
-
-    @Override
     public ClassLoader getClassLoader() {
         if (mProxy != null) {
             return mProxy.getClassLoader();
@@ -253,7 +236,50 @@ public class PluginBaseActivity extends Activity implements PluginLifecycle {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void startActivity(Intent intent) {
+        if (mProxy != null) {
+            mProxy.startActivity(intent);
+            return;
+        }
+        super.startActivity(intent);
+    }
+
+    @Override
+    public void startActivity(Intent intent, @Nullable Bundle options) {
+        if (mProxy != null) {
+            mProxy.startActivity(intent, options);
+            return;
+        }
+        super.startActivity(intent, options);
+    }
+
+    @Override
+    public ComponentName startService(Intent service) {
+        if (mProxy != null) {
+            return mProxy.startService(service);
+        }
+        return super.startService(service);
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        if (mProxy != null) {
+            return mProxy.stopService(name);
+        }
+        return super.stopService(name);
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        if (mProxy != null) {
+            mProxy.startActivityForResult(intent, requestCode);
+            return;
+        }
+        super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mProxy == null) {
             super.onActivityResult(requestCode, resultCode, data);
         }

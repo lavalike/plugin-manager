@@ -1,6 +1,7 @@
 package com.wangzhen.plugin.callback;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,8 @@ public interface PluginLifecycle {
     void onStop();
 
     void onDestroy();
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 
     void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 }
