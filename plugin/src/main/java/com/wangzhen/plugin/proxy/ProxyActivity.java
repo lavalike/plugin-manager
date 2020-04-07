@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
@@ -84,9 +85,11 @@ public class ProxyActivity extends Activity {
 
     @Override
     public void startActivity(Intent intent) {
-        String className = intent.getComponent() != null ? intent.getComponent().getClassName() : "";
-        intent = new Intent(this, ProxyActivity.class);
-        intent.putExtra(Key.CLASS_NAME, className);
+        if (TextUtils.isEmpty(intent.getAction())) {
+            String className = intent.getComponent() != null ? intent.getComponent().getClassName() : "";
+            intent = new Intent(this, ProxyActivity.class);
+            intent.putExtra(Key.CLASS_NAME, className);
+        }
         super.startActivity(intent);
     }
 
