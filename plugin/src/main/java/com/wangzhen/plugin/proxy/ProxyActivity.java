@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.wangzhen.plugin.PluginManager;
-import com.wangzhen.plugin.callback.PluginLifecycle;
+import com.wangzhen.plugin.callback.PluginActivityLifecycle;
 import com.wangzhen.plugin.common.Key;
 
 /**
@@ -20,7 +20,7 @@ import com.wangzhen.plugin.common.Key;
  */
 public class ProxyActivity extends Activity {
 
-    private PluginLifecycle mLifecycle;
+    private PluginActivityLifecycle mLifecycle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,8 +33,8 @@ public class ProxyActivity extends Activity {
         try {
             Class<?> pluginClass = PluginManager.getInstance().getPluginClassloader().loadClass(className);
             Object instance = pluginClass.newInstance();
-            if (instance instanceof PluginLifecycle) {
-                mLifecycle = (PluginLifecycle) instance;
+            if (instance instanceof PluginActivityLifecycle) {
+                mLifecycle = (PluginActivityLifecycle) instance;
                 mLifecycle.attach(this);
                 Bundle bundle = new Bundle();
                 mLifecycle.onCreate(bundle);

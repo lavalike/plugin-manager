@@ -19,13 +19,13 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wangzhen.plugin.callback.PluginLifecycle;
+import com.wangzhen.plugin.callback.PluginActivityLifecycle;
 
 /**
  * all activities in plugin must extend this
  * Created by wangzhen on 2020/4/1.
  */
-public class PluginBaseActivity extends Activity implements PluginLifecycle {
+public class PluginBaseActivity extends Activity implements PluginActivityLifecycle {
     protected Activity mProxy;
 
     @Override

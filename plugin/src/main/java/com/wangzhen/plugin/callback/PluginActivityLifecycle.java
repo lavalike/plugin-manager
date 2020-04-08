@@ -7,10 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 /**
- * plugin lifecycle callbacks
+ * plugin activity lifecycle callbacks
  * Created by wangzhen on 2020/4/1.
  */
-public interface PluginLifecycle {
+public interface PluginActivityLifecycle {
     void attach(Activity activity);
 
     void onCreate(Bundle bundle);
