@@ -25,6 +25,21 @@ public class PluginBaseService extends Service implements PluginServiceLifecycle
         return mProxy == null ? this : mProxy;
     }
 
+    @Override
+    public void onCreate() {
+        if (mProxy == null) {
+            super.onCreate();
+        }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (mProxy != null) {
+            return mProxy.onStartCommand(intent, flags, startId);
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -54,4 +69,5 @@ public class PluginBaseService extends Service implements PluginServiceLifecycle
         }
         return super.stopService(name);
     }
+
 }
