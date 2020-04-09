@@ -10,6 +10,8 @@
 
         <activity android:name=".proxy.ProxyActivity" />
         <activity android:name=".base.PluginBaseActivity" />
+
+        <service android:name=".proxy.ProxyService" />
     </application>
 
 </manifest>

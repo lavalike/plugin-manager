@@ -1,6 +1,7 @@
 package com.wangzhen.plugin.proxy;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -92,6 +93,22 @@ public class ProxyActivity extends Activity {
             intent.putExtra(Key.CLASS_NAME, className);
         }
         super.startActivity(intent);
+    }
+
+    @Override
+    public ComponentName startService(Intent service) {
+        ComponentName component = service.getComponent();
+        if (component != null) {
+            service = new Intent(this, ProxyService.class);
+            service.putExtra(Key.CLASS_NAME, component.getClassName());
+        }
+        return super.startService(service);
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        name = new Intent(this, ProxyService.class);
+        return super.stopService(name);
     }
 
     @Override

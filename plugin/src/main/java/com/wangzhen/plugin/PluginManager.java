@@ -17,6 +17,7 @@ import com.wangzhen.plugin.helper.CopyUtils;
 import com.wangzhen.plugin.helper.FileUtils;
 import com.wangzhen.plugin.provider.ContextProvider;
 import com.wangzhen.plugin.proxy.ProxyActivity;
+import com.wangzhen.plugin.proxy.ProxyService;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -150,6 +151,13 @@ public final class PluginManager implements Plugin {
         if (mPackageArchiveInfo != null) {
             startActivity(mPackageArchiveInfo.activities[0].name);
         }
+    }
+
+    @Override
+    public void startService(String className) {
+        Intent intent = new Intent(mContext, ProxyService.class);
+        intent.putExtra(Key.CLASS_NAME, className);
+        mContext.startService(intent);
     }
 
     @Override
