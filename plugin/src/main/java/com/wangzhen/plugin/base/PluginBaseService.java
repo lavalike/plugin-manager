@@ -2,6 +2,7 @@ package com.wangzhen.plugin.base;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -28,5 +29,29 @@ public class PluginBaseService extends Service implements PluginServiceLifecycle
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public String getPackageName() {
+        if (mProxy != null) {
+            return mProxy.getPackageName();
+        }
+        return super.getPackageName();
+    }
+
+    @Override
+    public PackageManager getPackageManager() {
+        if (mProxy != null) {
+            return mProxy.getPackageManager();
+        }
+        return super.getPackageManager();
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        if (mProxy != null) {
+            return mProxy.stopService(name);
+        }
+        return super.stopService(name);
     }
 }

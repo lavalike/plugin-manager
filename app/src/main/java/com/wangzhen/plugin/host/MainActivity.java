@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess() {
                     mTvMsg.append("plugin load success\n");
                     PluginManager.getInstance().startActivity();
+//                    PluginManager.getInstance().startService("com.wangzhen.plugin.two.service.PluginService");
                 }
 
                 @Override

@@ -8,7 +8,6 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import com.wangzhen.plugin.PluginManager;
-import com.wangzhen.plugin.callback.PluginActivityLifecycle;
 import com.wangzhen.plugin.callback.PluginServiceLifecycle;
 import com.wangzhen.plugin.common.Key;
 
@@ -38,7 +37,7 @@ public class ProxyService extends Service {
         try {
             Class<?> pluginClass = PluginManager.getInstance().getPluginClassloader().loadClass(className);
             Object instance = pluginClass.newInstance();
-            if (instance instanceof PluginActivityLifecycle) {
+            if (instance instanceof PluginServiceLifecycle) {
                 mLifecycle = (PluginServiceLifecycle) instance;
                 mLifecycle.attach(this);
                 mLifecycle.onCreate();
@@ -112,5 +111,11 @@ public class ProxyService extends Service {
             mLifecycle.onTaskRemoved(rootIntent);
         }
         super.onTaskRemoved(rootIntent);
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        ClassLoader classloader = PluginManager.getInstance().getPluginClassloader();
+        return classloader != null ? classloader : super.getClassLoader();
     }
 }
