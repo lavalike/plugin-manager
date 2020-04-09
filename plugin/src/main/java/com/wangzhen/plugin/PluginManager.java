@@ -143,6 +143,7 @@ public final class PluginManager implements Plugin {
     public void startActivity(String className) {
         Intent intent = new Intent(mContext, ProxyActivity.class);
         intent.putExtra(Key.CLASS_NAME, className);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
 
