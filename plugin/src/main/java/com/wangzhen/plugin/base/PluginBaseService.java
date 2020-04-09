@@ -1,8 +1,8 @@
 package com.wangzhen.plugin.base;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -21,7 +21,7 @@ public class PluginBaseService extends Service implements PluginServiceLifecycle
         mProxy = service;
     }
 
-    public Service getService() {
+    public Context getContext() {
         return mProxy == null ? this : mProxy;
     }
 
@@ -34,40 +34,13 @@ public class PluginBaseService extends Service implements PluginServiceLifecycle
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (mProxy != null) {
-            return mProxy.onStartCommand(intent, flags, startId);
-        }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY_COMPATIBILITY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    @Override
-    public String getPackageName() {
-        if (mProxy != null) {
-            return mProxy.getPackageName();
-        }
-        return super.getPackageName();
-    }
-
-    @Override
-    public PackageManager getPackageManager() {
-        if (mProxy != null) {
-            return mProxy.getPackageManager();
-        }
-        return super.getPackageManager();
-    }
-
-    @Override
-    public boolean stopService(Intent name) {
-        if (mProxy != null) {
-            return mProxy.stopService(name);
-        }
-        return super.stopService(name);
     }
 
 }
