@@ -18,6 +18,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.wangzhen.plugin.callback.PluginActivityLifecycle;
 
@@ -25,7 +26,7 @@ import com.wangzhen.plugin.callback.PluginActivityLifecycle;
  * all activities in plugin must extend this
  * Created by wangzhen on 2020/4/1.
  */
-public class PluginBaseActivity extends Activity implements PluginActivityLifecycle {
+public class PluginBaseActivity extends FragmentActivity implements PluginActivityLifecycle {
     protected Activity mProxy;
 
     @Override
