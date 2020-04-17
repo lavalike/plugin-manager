@@ -51,37 +51,49 @@ public class ProxyActivity extends Activity {
 
     @Override
     protected void onStart() {
-        mLifecycle.onStart();
+        if (mLifecycle != null) {
+            mLifecycle.onStart();
+        }
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        mLifecycle.onResume();
+        if (mLifecycle != null) {
+            mLifecycle.onResume();
+        }
         super.onResume();
     }
 
     @Override
     protected void onRestart() {
-        mLifecycle.onRestart();
+        if (mLifecycle != null) {
+            mLifecycle.onRestart();
+        }
         super.onRestart();
     }
 
     @Override
     protected void onPause() {
-        mLifecycle.onPause();
+        if (mLifecycle != null) {
+            mLifecycle.onPause();
+        }
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        mLifecycle.onStop();
+        if (mLifecycle != null) {
+            mLifecycle.onStop();
+        }
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        mLifecycle.onDestroy();
+        if (mLifecycle != null) {
+            mLifecycle.onDestroy();
+        }
         super.onDestroy();
     }
 
@@ -131,13 +143,17 @@ public class ProxyActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mLifecycle.onActivityResult(requestCode, resultCode, data);
+        if (mLifecycle != null) {
+            mLifecycle.onActivityResult(requestCode, resultCode, data);
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mLifecycle.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mLifecycle != null) {
+            mLifecycle.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
