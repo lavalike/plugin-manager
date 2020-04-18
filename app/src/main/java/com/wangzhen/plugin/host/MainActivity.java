@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPluginVersion() {
         Request request = new Request.Builder()
-                .url("http://192.168.188.199:8080/wangzhen/plugin/plugin.json")
+                .url("http://192.168.188.132:8080/wangzhen/plugin/plugin.json")
                 .build();
         new OkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mTvMsg.append(e.getMessage() + "\n");
                         mTvMsg.append("an error occur, load cache version\n");
                         loadPlugin(getPluginCache());
                     }
