@@ -73,13 +73,6 @@ public interface Plugin {
     void startActivity();
 
     /**
-     * start service according to given class name
-     *
-     * @param className class name
-     */
-    void startService(String className);
-
-    /**
      * get plugin asset manager
      *
      * @return asset manager

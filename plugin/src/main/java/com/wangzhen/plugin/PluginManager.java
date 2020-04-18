@@ -15,9 +15,11 @@ import com.wangzhen.plugin.callback.PluginLoadCallback;
 import com.wangzhen.plugin.common.Key;
 import com.wangzhen.plugin.helper.CopyUtils;
 import com.wangzhen.plugin.helper.FileUtils;
+import com.wangzhen.plugin.hook.AMSHookHelper;
+import com.wangzhen.plugin.hook.DexHookHelper;
+import com.wangzhen.plugin.hook.ServiceManager;
 import com.wangzhen.plugin.provider.ContextProvider;
 import com.wangzhen.plugin.proxy.ProxyActivity;
-import com.wangzhen.plugin.proxy.ProxyService;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -97,13 +99,19 @@ public final class PluginManager implements Plugin {
     }
 
     private void applyPlugin(String path) {
-        mPluginDexClassloader = new DexClassLoader(path, FileUtils.getDexOutputDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
         try {
+            //实现Service插件化
+            AMSHookHelper.hookActivityManagerNative();
+            DexHookHelper.patchClassLoader(mContext.getClassLoader(), new File(path), mContext.getFileStreamPath("plugin.odex"));
+            ServiceManager.getInstance().preLoadServices(new File(path));
+
+            mPluginDexClassloader = new DexClassLoader(path, FileUtils.getDexOutputDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
             method.invoke(mAssetManager, path);
             mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
             mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -152,13 +160,6 @@ public final class PluginManager implements Plugin {
         if (mPackageArchiveInfo != null) {
             startActivity(mPackageArchiveInfo.activities[0].name);
         }
-    }
-
-    @Override
-    public void startService(String className) {
-        Intent intent = new Intent(mContext, ProxyService.class);
-        intent.putExtra(Key.CLASS_NAME, className);
-        mContext.startService(intent);
     }
 
     @Override
