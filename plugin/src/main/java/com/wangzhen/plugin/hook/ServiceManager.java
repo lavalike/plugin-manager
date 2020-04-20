@@ -4,20 +4,19 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.wangzhen.plugin.PluginManager;
 import com.wangzhen.plugin.provider.ContextProvider;
 import com.wangzhen.plugin.proxy.ProxyService;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -158,31 +157,13 @@ public class ServiceManager {
 
     /**
      * parse all services in apk and store to local
-     *
-     * @param apkFile apk file
      */
-    public void parseServices(File apkFile) throws Exception {
-        Class<?> packageParserClass = Class.forName("android.content.pm.PackageParser");
-        Method parsePackageMethod = packageParserClass.getDeclaredMethod("parsePackage", File.class, int.class);
-
-        Object packageParser = packageParserClass.newInstance();
-        Object packageObj = parsePackageMethod.invoke(packageParser, apkFile, PackageManager.GET_SERVICES);
-
-        Field servicesField = packageObj.getClass().getDeclaredField("services");
-        List services = (List) servicesField.get(packageObj);
-
-        Class<?> packageParser$ServiceClass = Class.forName("android.content.pm.PackageParser$Service");
-        Class<?> packageUserStateClass = Class.forName("android.content.pm.PackageUserState");
-        Class<?> userHandler = Class.forName("android.os.UserHandle");
-        Method getCallingUserIdMethod = userHandler.getDeclaredMethod("getCallingUserId");
-        int userId = (Integer) getCallingUserIdMethod.invoke(null);
-        Object defaultUserState = packageUserStateClass.newInstance();
-
-        Method generateReceiverInfo = packageParserClass.getDeclaredMethod("generateServiceInfo", packageParser$ServiceClass, int.class, packageUserStateClass, int.class);
-
-        for (Object service : services) {
-            ServiceInfo info = (ServiceInfo) generateReceiverInfo.invoke(packageParser, service, 0, defaultUserState, userId);
-            mServiceInfoMap.put(new ComponentName(info.packageName, info.name), info);
+    public void parseServices() {
+        PackageInfo packageInfo = PluginManager.getInstance().getPluginPackageInfo();
+        if (packageInfo != null && packageInfo.services != null) {
+            for (ServiceInfo info : packageInfo.services) {
+                mServiceInfoMap.put(new ComponentName(info.packageName, info.name), info);
+            }
         }
     }
 }

@@ -105,12 +105,12 @@ public final class PluginManager implements Plugin {
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
             method.invoke(mAssetManager, path);
             mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
-            mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+            mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES);
 
             //hook ams, implement service plugin
             AMSHookHelper.hookActivityManagerNative();
             DexHookHelper.patchClassLoader(mContext.getClassLoader(), new File(path), mContext.getFileStreamPath("plugin.odex"));
-            ServiceManager.getInstance().parseServices(new File(path));
+            ServiceManager.getInstance().parseServices();
 
             runOnUiThread(new Runnable() {
                 @Override
