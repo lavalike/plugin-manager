@@ -100,17 +100,17 @@ public final class PluginManager implements Plugin {
 
     private void applyPlugin(String path) {
         try {
-            //实现Service插件化
-            AMSHookHelper.hookActivityManagerNative();
-            DexHookHelper.patchClassLoader(mContext.getClassLoader(), new File(path), mContext.getFileStreamPath("plugin.odex"));
-            ServiceManager.getInstance().preLoadServices(new File(path));
-
             mPluginDexClassloader = new DexClassLoader(path, FileUtils.getDexOutputDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
             method.invoke(mAssetManager, path);
             mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
             mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+
+            //hook ams, implement service plugin
+            AMSHookHelper.hookActivityManagerNative();
+            DexHookHelper.patchClassLoader(mContext.getClassLoader(), new File(path), mContext.getFileStreamPath("plugin.odex"));
+            ServiceManager.getInstance().parseServices(new File(path));
 
             runOnUiThread(new Runnable() {
                 @Override
