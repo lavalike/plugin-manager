@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
  * Created by wangzhen on 2020/4/18.
  */
 class IActivityManagerHandler implements InvocationHandler {
-    Object mRaw;
+    private Object mRaw;
 
     public IActivityManagerHandler(Object raw) {
         mRaw = raw;

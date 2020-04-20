@@ -3,7 +3,6 @@ package com.wangzhen.plugin.hook;
 import android.os.Build;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
 /**
@@ -13,12 +12,8 @@ import java.lang.reflect.Proxy;
 public class AMSHookHelper {
     public static final String EXTRA_TARGET_INTENT = "extra_target_intent";
 
-    public static void hookActivityManagerNative() throws ClassNotFoundException,
-            NoSuchMethodException, InvocationTargetException,
-            IllegalAccessException, NoSuchFieldException {
-
+    public static void hookActivityManagerNative() throws ClassNotFoundException, IllegalAccessException, NoSuchFieldException {
         Object gDefault;
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             Class<?> activityManagerNativeClass = Class.forName("android.app.ActivityManagerNative");
             Field gDefaultField = activityManagerNativeClass.getDeclaredField("gDefault");
