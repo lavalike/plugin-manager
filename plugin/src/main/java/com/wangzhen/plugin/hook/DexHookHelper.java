@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.zip.ZipFile;
 
 import dalvik.system.DexClassLoader;
 import dalvik.system.DexFile;
@@ -37,11 +38,22 @@ public class DexHookHelper {
         Object object;
         // version compat.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // Element(File file, boolean isDirectory, File zip, DexFile dexFile)
-            Constructor<?> constructor = elementClass.getConstructor(File.class, boolean.class, File.class, DexFile.class);
-            object = constructor.newInstance(apkFile, false, apkFile, DexFile.loadDex(apkFile.getCanonicalPath(), optDexFile.getAbsolutePath(), 0));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                // API 17 ~ 26 -> Element(File file, boolean isDirectory, File zip, DexFile dexFile)
+                Constructor<?> constructor = elementClass.getConstructor(File.class, boolean.class, File.class, DexFile.class);
+                object = constructor.newInstance(apkFile, false, apkFile, DexFile.loadDex(apkFile.getCanonicalPath(), optDexFile.getAbsolutePath(), 0));
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                // API == 17 and lower -> Element(File file, File zip, DexFile dexFile)
+                Constructor<?> constructor = elementClass.getConstructor(File.class, File.class, DexFile.class);
+                object = constructor.newInstance(apkFile, apkFile, DexFile.loadDex(apkFile.getCanonicalPath(), optDexFile.getAbsolutePath(), 0));
+            } else {
+                // API < 17 -> Element(File file, ZipFile zipFile, DexFile dexFile)
+                // to be tested
+                Constructor<?> constructor = elementClass.getConstructor(File.class, ZipFile.class, DexFile.class);
+                object = constructor.newInstance(apkFile, new ZipFile(apkFile), DexFile.loadDex(apkFile.getCanonicalPath(), optDexFile.getAbsolutePath(), 0));
+            }
         } else {
-            // Element(DexFile dexFile, File dexZipPath)
+            // API 26 ~ -> Element(DexFile dexFile, File dexZipPath)
             Constructor<?> constructor = elementClass.getConstructor(DexFile.class, File.class);
             object = constructor.newInstance(DexFile.loadDex(apkFile.getCanonicalPath(), optDexFile.getAbsolutePath(), 0), apkFile);
         }
