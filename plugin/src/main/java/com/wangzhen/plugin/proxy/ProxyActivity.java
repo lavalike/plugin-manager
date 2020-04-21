@@ -39,12 +39,8 @@ public class ProxyActivity extends Activity {
                 Bundle bundle = new Bundle();
                 mLifecycle.onCreate(bundle);
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            finish();
         }
     }
 

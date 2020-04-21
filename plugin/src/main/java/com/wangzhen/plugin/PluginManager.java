@@ -109,7 +109,8 @@ public final class PluginManager implements Plugin {
 
             //hook ams, implement service plugin
             AMSHookHelper.hookActivityManagerNative();
-            DexHookHelper.patchClassLoader(mContext.getClassLoader(), new File(path), mContext.getFileStreamPath("plugin.odex"));
+            File file = new File(path);
+            DexHookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
             ServiceManager.getInstance().parseServices();
 
             runOnUiThread(new Runnable() {
