@@ -34,13 +34,23 @@ public class FileUtils {
     }
 
     /**
-     * get dex output dir
+     * get optimized dir
      *
      * @param context context
      * @return dex output dir
      */
-    public static File getDexOutputDir(Context context) {
+    public static File getOptimizedDir(Context context) {
         return context.getDir("dex", Context.MODE_PRIVATE);
+    }
+
+    /**
+     * get library search dir
+     *
+     * @param context context
+     * @return library search dir
+     */
+    public static File getLibrarySearchDir(Context context) {
+        return context.getDir("native_lib", Context.MODE_PRIVATE);
     }
 
     /**
