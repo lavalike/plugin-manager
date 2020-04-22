@@ -230,13 +230,13 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
         return super.getSharedPreferences(name, mode);
     }
 
-    @Override
-    public Context getApplicationContext() {
-        if (mProxy != null) {
-            return mProxy.getApplicationContext();
-        }
-        return super.getApplicationContext();
-    }
+//    @Override
+//    public Context getApplicationContext() {
+//        if (mProxy != null) {
+//            return mProxy.getApplicationContext();
+//        }
+//        return super.getApplicationContext();
+//    }
 
     @Override
     public void startActivity(Intent intent) {
@@ -316,29 +316,29 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
         }
     }
 
-//    @Override
-//    public void sendBroadcast(Intent intent) {
-//        if (mProxy != null) {
-//            mProxy.sendBroadcast(intent);
-//        } else {
-//            super.sendBroadcast(intent);
-//        }
-//    }
-//
-//    @Override
-//    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-//        if (mProxy != null) {
-//            return mProxy.registerReceiver(receiver, filter);
-//        }
-//        return super.registerReceiver(receiver, filter);
-//    }
-//
-//    @Override
-//    public void unregisterReceiver(BroadcastReceiver receiver) {
-//        if (mProxy != null) {
-//            mProxy.unregisterReceiver(receiver);
-//        } else {
-//            super.unregisterReceiver(receiver);
-//        }
-//    }
+    @Override
+    public void sendBroadcast(Intent intent) {
+        if (mProxy != null) {
+            mProxy.sendBroadcast(intent);
+        } else {
+            super.sendBroadcast(intent);
+        }
+    }
+
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+        if (mProxy != null) {
+            return mProxy.registerReceiver(receiver, filter);
+        }
+        return super.registerReceiver(receiver, filter);
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver receiver) {
+        if (mProxy != null) {
+            mProxy.unregisterReceiver(receiver);
+        } else {
+            super.unregisterReceiver(receiver);
+        }
+    }
 }
