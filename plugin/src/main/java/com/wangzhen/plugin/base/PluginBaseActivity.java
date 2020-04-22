@@ -320,6 +320,42 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     }
 
     @Override
+    public void sendBroadcast(Intent intent) {
+        if (mProxy != null) {
+            mProxy.sendBroadcast(intent);
+        } else {
+            super.sendBroadcast(intent);
+        }
+    }
+
+    @Override
+    public void sendBroadcast(Intent intent, String receiverPermission) {
+        if (mProxy != null) {
+            mProxy.sendBroadcast(intent, receiverPermission);
+        } else {
+            super.sendBroadcast(intent, receiverPermission);
+        }
+    }
+
+    @Override
+    public void sendOrderedBroadcast(Intent intent, String receiverPermission) {
+        if (mProxy != null) {
+            mProxy.sendOrderedBroadcast(intent, receiverPermission);
+        } else {
+            super.sendOrderedBroadcast(intent, receiverPermission);
+        }
+    }
+
+    @Override
+    public void sendOrderedBroadcast(Intent intent, String receiverPermission, BroadcastReceiver resultReceiver, Handler scheduler, int initialCode, String initialData, Bundle initialExtras) {
+        if (mProxy != null) {
+            mProxy.sendOrderedBroadcast(intent, receiverPermission, resultReceiver, scheduler, initialCode, initialData, initialExtras);
+        } else {
+            super.sendOrderedBroadcast(intent, receiverPermission, resultReceiver, scheduler, initialCode, initialData, initialExtras);
+        }
+    }
+
+    @Override
     public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
         if (mProxy != null) {
             return mProxy.registerReceiver(receiver, filter);
