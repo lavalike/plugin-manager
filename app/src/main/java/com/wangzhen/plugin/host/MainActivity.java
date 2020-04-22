@@ -1,7 +1,10 @@
 package com.wangzhen.plugin.host;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -41,11 +44,34 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mTvMsg;
     private int REQUEST_CODE = 0;
+    private BroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
+        initReceiver();
+    }
+
+    private void initReceiver() {
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("plugin-two".equals(intent.getAction())) {
+                    Toast.makeText(context, "宿主收到插件广播 -> " + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
+                } else if ("launch_plugin".equals(intent.getAction())) {
+                    loadAssetPlugin(null);
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("plugin-two");
+        filter.addAction("launch_plugin");
+        registerReceiver(mReceiver, filter);
+    }
+
+    private void initViews() {
         mTvMsg = findViewById(R.id.tv_msg);
         mTvMsg.setText("Status:\n");
     }
@@ -197,5 +223,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "请开启存储权限", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 }
