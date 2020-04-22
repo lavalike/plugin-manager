@@ -1,6 +1,5 @@
 package com.wangzhen.plugin.proxy;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -9,6 +8,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.wangzhen.plugin.PluginManager;
 import com.wangzhen.plugin.callback.PluginActivityLifecycle;
@@ -18,7 +18,7 @@ import com.wangzhen.plugin.common.Key;
  * ProxyActivity
  * Created by wangzhen on 2020/4/1.
  */
-public class ProxyActivity extends Activity {
+public class ProxyActivity extends FragmentActivity {
 
     private PluginActivityLifecycle mLifecycle;
 
