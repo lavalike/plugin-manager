@@ -64,4 +64,42 @@ public class FileUtils {
             return new File(path).getName();
         return "";
     }
+
+    /**
+     * delete dir and files under dir
+     *
+     * @param dir dir
+     * @return result
+     */
+    public static boolean deleteDirectory(File dir) {
+        if (!dir.exists() || !dir.isDirectory()) {
+            return false;
+        }
+        boolean flag = true;
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                flag = deleteFile(file);
+                if (!flag) break;
+            } else {
+                flag = deleteDirectory(file);
+                if (!flag) break;
+            }
+        }
+        if (!flag) return false;
+        return dir.delete();
+    }
+
+    /**
+     * delete single file
+     *
+     * @param file file
+     * @return result
+     */
+    public static boolean deleteFile(File file) {
+        if (file.isFile() && file.exists()) {
+            return file.delete();
+        }
+        return false;
+    }
 }

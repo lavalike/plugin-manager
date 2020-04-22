@@ -3,6 +3,7 @@ package com.wangzhen.plugin.base;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -178,6 +179,14 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
             return mProxy.getPackageManager();
         }
         return super.getPackageManager();
+    }
+
+    @Override
+    public ContentResolver getContentResolver() {
+        if (mProxy != null) {
+            return mProxy.getContentResolver();
+        }
+        return super.getContentResolver();
     }
 
     @NonNull
