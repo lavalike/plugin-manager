@@ -1,14 +1,18 @@
 package com.wangzhen.plugin.base;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
 import com.wangzhen.plugin.callback.PluginActivityLifecycle;
@@ -91,27 +96,27 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     public void setContentView(int layoutResID) {
         if (mProxy != null) {
             mProxy.setContentView(layoutResID);
-            return;
+        } else {
+            super.setContentView(layoutResID);
         }
-        super.setContentView(layoutResID);
     }
 
     @Override
     public void setContentView(View view) {
         if (mProxy != null) {
             mProxy.setContentView(view);
-            return;
+        } else {
+            super.setContentView(view);
         }
-        super.setContentView(view);
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         if (mProxy != null) {
             mProxy.setContentView(view, params);
-            return;
+        } else {
+            super.setContentView(view, params);
         }
-        super.setContentView(view, params);
     }
 
     @Override
@@ -207,9 +212,9 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     public void finish() {
         if (mProxy != null) {
             mProxy.finish();
-            return;
+        } else {
+            super.finish();
         }
-        super.finish();
     }
 
     @Override
@@ -231,7 +236,7 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     @Override
     public Context getApplicationContext() {
         if (mProxy != null) {
-            mProxy.getApplicationContext();
+            return mProxy.getApplicationContext();
         }
         return super.getApplicationContext();
     }
@@ -240,18 +245,18 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     public void startActivity(Intent intent) {
         if (mProxy != null) {
             mProxy.startActivity(intent);
-            return;
+        } else {
+            super.startActivity(intent);
         }
-        super.startActivity(intent);
     }
 
     @Override
     public void startActivity(Intent intent, @Nullable Bundle options) {
         if (mProxy != null) {
             mProxy.startActivity(intent, options);
-            return;
+        } else {
+            super.startActivity(intent, options);
         }
-        super.startActivity(intent, options);
     }
 
     @Override
@@ -274,9 +279,9 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     public void startActivityForResult(Intent intent, int requestCode) {
         if (mProxy != null) {
             mProxy.startActivityForResult(intent, requestCode);
-            return;
+        } else {
+            super.startActivityForResult(intent, requestCode);
         }
-        super.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -311,6 +316,49 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     protected void onNewIntent(Intent intent) {
         if (mProxy == null) {
             super.onNewIntent(intent);
+        }
+    }
+
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+        if (mProxy != null) {
+            return mProxy.registerReceiver(receiver, filter);
+        }
+        return super.registerReceiver(receiver, filter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, int flags) {
+        if (mProxy != null) {
+            return mProxy.registerReceiver(receiver, filter, flags);
+        }
+        return super.registerReceiver(receiver, filter, flags);
+    }
+
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler) {
+        if (mProxy != null) {
+            return mProxy.registerReceiver(receiver, filter, broadcastPermission, scheduler);
+        }
+        return super.registerReceiver(receiver, filter, broadcastPermission, scheduler);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler, int flags) {
+        if (mProxy != null) {
+            return mProxy.registerReceiver(receiver, filter, broadcastPermission, scheduler, flags);
+        }
+        return super.registerReceiver(receiver, filter, broadcastPermission, scheduler, flags);
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver receiver) {
+        if (mProxy != null) {
+            mProxy.unregisterReceiver(receiver);
+        } else {
+            super.unregisterReceiver(receiver);
         }
     }
 }
