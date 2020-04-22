@@ -230,13 +230,13 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
         return super.getSharedPreferences(name, mode);
     }
 
-//    @Override
-//    public Context getApplicationContext() {
-//        if (mProxy != null) {
-//            return mProxy.getApplicationContext();
-//        }
-//        return super.getApplicationContext();
-//    }
+    @Override
+    public Context getApplicationContext() {
+        if (mProxy != null) {
+            return mProxy.getApplicationContext();
+        }
+        return super.getApplicationContext();
+    }
 
     @Override
     public void startActivity(Intent intent) {
