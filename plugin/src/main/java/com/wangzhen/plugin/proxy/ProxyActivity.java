@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +41,7 @@ public class ProxyActivity extends FragmentActivity {
                 mLifecycle.onCreate(bundle);
             }
         } catch (Exception e) {
+            Log.e("TAG", "handleProxy -> " + e.getMessage());
             finish();
         }
     }
