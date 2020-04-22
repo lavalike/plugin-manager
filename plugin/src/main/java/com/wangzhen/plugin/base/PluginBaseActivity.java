@@ -10,9 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
 import com.wangzhen.plugin.callback.PluginActivityLifecycle;
@@ -329,64 +326,11 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     }
 
     @Override
-    public void sendBroadcast(Intent intent, String receiverPermission) {
-        if (mProxy != null) {
-            mProxy.sendBroadcast(intent, receiverPermission);
-        } else {
-            super.sendBroadcast(intent, receiverPermission);
-        }
-    }
-
-    @Override
-    public void sendOrderedBroadcast(Intent intent, String receiverPermission) {
-        if (mProxy != null) {
-            mProxy.sendOrderedBroadcast(intent, receiverPermission);
-        } else {
-            super.sendOrderedBroadcast(intent, receiverPermission);
-        }
-    }
-
-    @Override
-    public void sendOrderedBroadcast(Intent intent, String receiverPermission, BroadcastReceiver resultReceiver, Handler scheduler, int initialCode, String initialData, Bundle initialExtras) {
-        if (mProxy != null) {
-            mProxy.sendOrderedBroadcast(intent, receiverPermission, resultReceiver, scheduler, initialCode, initialData, initialExtras);
-        } else {
-            super.sendOrderedBroadcast(intent, receiverPermission, resultReceiver, scheduler, initialCode, initialData, initialExtras);
-        }
-    }
-
-    @Override
     public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
         if (mProxy != null) {
             return mProxy.registerReceiver(receiver, filter);
         }
         return super.registerReceiver(receiver, filter);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, int flags) {
-        if (mProxy != null) {
-            return mProxy.registerReceiver(receiver, filter, flags);
-        }
-        return super.registerReceiver(receiver, filter, flags);
-    }
-
-    @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler) {
-        if (mProxy != null) {
-            return mProxy.registerReceiver(receiver, filter, broadcastPermission, scheduler);
-        }
-        return super.registerReceiver(receiver, filter, broadcastPermission, scheduler);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler, int flags) {
-        if (mProxy != null) {
-            return mProxy.registerReceiver(receiver, filter, broadcastPermission, scheduler, flags);
-        }
-        return super.registerReceiver(receiver, filter, broadcastPermission, scheduler, flags);
     }
 
     @Override
