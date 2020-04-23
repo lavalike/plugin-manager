@@ -1,17 +1,17 @@
 package com.wangzhen.plugin.callback;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * plugin activity lifecycle callbacks
  * Created by wangzhen on 2020/4/1.
  */
 public interface PluginActivityLifecycle {
-    void attach(Activity activity);
+    void attach(FragmentActivity activity);
 
     void onCreate(Bundle bundle);
 

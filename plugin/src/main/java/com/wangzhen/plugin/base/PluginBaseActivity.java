@@ -30,10 +30,10 @@ import com.wangzhen.plugin.callback.PluginActivityLifecycle;
  * Created by wangzhen on 2020/4/1.
  */
 public class PluginBaseActivity extends FragmentActivity implements PluginActivityLifecycle {
-    protected Activity mProxy;
+    protected FragmentActivity mProxy;
 
     @Override
-    public void attach(Activity activity) {
+    public void attach(FragmentActivity activity) {
         mProxy = activity;
     }
 

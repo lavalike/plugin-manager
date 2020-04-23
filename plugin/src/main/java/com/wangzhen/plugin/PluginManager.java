@@ -100,7 +100,8 @@ public final class PluginManager implements Plugin {
 
     private void applyPlugin(String path) {
         try {
-            mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), FileUtils.getLibrarySearchDir(mContext).getAbsolutePath(), mContext.getClassLoader());
+            String librarySearchDir = FileUtils.getLibrarySearchDir(mContext).getAbsolutePath();
+            mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
             method.invoke(mAssetManager, path);

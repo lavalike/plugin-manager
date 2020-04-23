@@ -77,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadAssetPlugin(View view) {
-        PluginManager.getInstance().loadAsset("plugin/plugin-one.apk", new PluginLoadCallback() {
+//        PluginManager.getInstance().loadAsset("plugin/plugin-one.apk", new PluginLoadCallback() {
+        PluginManager.getInstance().loadAsset("plugin/census.apk", new PluginLoadCallback() {
             @Override
             public void onSuccess() {
                 mTvMsg.append("plugin-one.apk load success\n");

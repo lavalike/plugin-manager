@@ -38,7 +38,6 @@ public class ProxyActivity extends FragmentActivity {
     private void handleProxy() {
         mClassName = getIntent().getStringExtra(Key.CLASS_NAME);
         try {
-            fixTheme();
             Class<?> pluginClass = PluginManager.getInstance().getPluginClassloader().loadClass(mClassName);
             Object instance = pluginClass.newInstance();
             if (instance instanceof PluginActivityLifecycle) {
@@ -180,10 +179,5 @@ public class ProxyActivity extends FragmentActivity {
             mLifecycle.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public Resources.Theme getTheme() {
-        return mTheme == null ? super.getTheme() : mTheme;
     }
 }
