@@ -3,6 +3,7 @@ package com.wangzhen.plugin.hook;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.util.Log;
 import android.util.Pair;
 
 import com.wangzhen.plugin.PluginManager;
@@ -40,6 +41,10 @@ class IActivityManagerHandler implements InvocationHandler {
         if ("stopService".equals(method.getName())) {
             Intent raw = compatIntent(findFirstIntentOfArgs(args).second);
             return ServiceManager.getInstance().stopService(raw);
+        }
+
+        if ("startActivity".equals(method.getName())) {
+            Log.e("TAG", "hook -> startActivity");
         }
 
         return method.invoke(mRaw, args);
