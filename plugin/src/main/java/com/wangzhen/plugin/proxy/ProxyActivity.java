@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.wangzhen.plugin.PluginManager;
+import com.wangzhen.plugin.R;
 import com.wangzhen.plugin.callback.PluginActivityLifecycle;
 import com.wangzhen.plugin.common.Key;
 
@@ -38,6 +38,7 @@ public class ProxyActivity extends FragmentActivity {
     private void handleProxy() {
         mClassName = getIntent().getStringExtra(Key.CLASS_NAME);
         try {
+            themeCompat();
             Class<?> pluginClass = PluginManager.getInstance().getPluginClassloader().loadClass(mClassName);
             Object instance = pluginClass.newInstance();
             if (instance instanceof PluginActivityLifecycle) {
@@ -52,7 +53,7 @@ public class ProxyActivity extends FragmentActivity {
         }
     }
 
-    private void fixTheme() {
+    private void themeCompat() {
         PackageInfo packageInfo = PluginManager.getInstance().getPluginPackageInfo();
         if (packageInfo != null) {
             int defaultTheme = packageInfo.applicationInfo.theme;
@@ -63,13 +64,10 @@ public class ProxyActivity extends FragmentActivity {
                         if (defaultTheme != 0) {
                             mActivityInfo.theme = defaultTheme;
                         } else {
-                            if (Build.VERSION.SDK_INT >= 14) {
-                                mActivityInfo.theme = android.R.style.Theme_DeviceDefault;
-                            } else {
-                                mActivityInfo.theme = android.R.style.Theme;
-                            }
+                            mActivityInfo.theme = R.style.Theme_AppCompat;
                         }
                     }
+                    break;
                 }
             }
             if (mActivityInfo != null) {
@@ -79,8 +77,8 @@ public class ProxyActivity extends FragmentActivity {
                 Resources.Theme superTheme = getTheme();
                 mTheme = PluginManager.getInstance().getPluginResources().newTheme();
                 mTheme.setTo(superTheme);
-                // Finals适配三星以及部分加载XML出现异常BUG
                 try {
+                    // Finals适配三星以及部分加载XML出现异常BUG
                     mTheme.applyStyle(mActivityInfo.theme, true);
                 } catch (Exception e) {
                     e.printStackTrace();
