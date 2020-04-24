@@ -1,6 +1,5 @@
 package com.wangzhen.plugin.base;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -171,6 +170,24 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
             return mProxy.getPackageName();
         }
         return super.getPackageName();
+    }
+
+    public String getBasePackageName() {
+        return getPackageName();
+    }
+
+    public String getOpPackageName() {
+//        String value = null;
+//        try {
+//            Class<?> c = Class.forName("android.content.Context");
+//            Method method = c.getMethod("getOpPackageName");
+//            method.setAccessible(true);
+//            value = (String) method.invoke(c);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return value;
+        return getPackageName();
     }
 
     @Override
