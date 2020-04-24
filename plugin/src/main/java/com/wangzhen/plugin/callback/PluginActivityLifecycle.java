@@ -2,10 +2,8 @@ package com.wangzhen.plugin.callback;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.WindowManager.LayoutParams;
 
 import androidx.annotation.NonNull;
@@ -41,10 +39,6 @@ public interface PluginActivityLifecycle {
     void onNewIntent(Intent intent);
 
     void onRestoreInstanceState(Bundle savedInstanceState);
-
-    boolean onTouchEvent(MotionEvent event);
-
-    boolean onKeyUp(int keyCode, KeyEvent event);
 
     void onWindowAttributesChanged(LayoutParams params);
 

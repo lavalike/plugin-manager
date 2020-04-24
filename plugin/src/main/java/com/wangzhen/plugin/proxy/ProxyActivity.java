@@ -210,22 +210,6 @@ public class ProxyActivity extends FragmentActivity {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mLifecycle != null) {
-            return mLifecycle.onTouchEvent(event);
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (mLifecycle != null) {
-            return mLifecycle.onKeyUp(keyCode, event);
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
     public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
         if (mLifecycle != null) {
             mLifecycle.onWindowAttributesChanged(params);

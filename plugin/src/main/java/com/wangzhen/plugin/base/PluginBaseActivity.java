@@ -12,11 +12,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -379,22 +377,6 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mProxy == null) {
-            return super.onTouchEvent(event);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (mProxy == null) {
-            return super.onKeyUp(keyCode, event);
-        }
-        return false;
-    }
-
-    @Override
     public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
         if (mProxy == null) {
             super.onWindowAttributesChanged(params);
@@ -410,17 +392,17 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mProxy == null) {
-            return super.onCreateOptionsMenu(menu);
+        if (mProxy != null) {
+            return mProxy.onCreateOptionsMenu(menu);
         }
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mProxy == null) {
-            return super.onOptionsItemSelected(item);
+        if (mProxy != null) {
+            return mProxy.onOptionsItemSelected(item);
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 }
