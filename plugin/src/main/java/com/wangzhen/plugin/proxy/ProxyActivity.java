@@ -49,6 +49,7 @@ public class ProxyActivity extends FragmentActivity {
             }
         } catch (Exception e) {
             Log.e("TAG", "handleProxy exception -> " + e.getMessage());
+            mLifecycle = null;
             finish();
         }
     }
