@@ -12,7 +12,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -179,16 +183,6 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     }
 
     public String getOpPackageName() {
-//        String value = null;
-//        try {
-//            Class<?> c = Class.forName("android.content.Context");
-//            Method method = c.getMethod("getOpPackageName");
-//            method.setAccessible(true);
-//            value = (String) method.invoke(c);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return value;
         return getPackageName();
     }
 
@@ -324,9 +318,9 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         if (mProxy == null) {
-            super.onRestoreInstanceState(savedInstanceState, persistentState);
+            super.onSaveInstanceState(outState);
         }
     }
 
@@ -338,7 +332,21 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (mProxy == null) {
+            super.onRestoreInstanceState(savedInstanceState);
+        }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        if (mProxy == null) {
+            super.onRestoreInstanceState(savedInstanceState, persistentState);
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
         if (mProxy == null) {
             super.onNewIntent(intent);
         }
@@ -368,5 +376,51 @@ public class PluginBaseActivity extends FragmentActivity implements PluginActivi
         } else {
             super.unregisterReceiver(receiver);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mProxy == null) {
+            return super.onTouchEvent(event);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (mProxy == null) {
+            return super.onKeyUp(keyCode, event);
+        }
+        return false;
+    }
+
+    @Override
+    public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
+        if (mProxy == null) {
+            super.onWindowAttributesChanged(params);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (mProxy == null) {
+            super.onWindowFocusChanged(hasFocus);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mProxy == null) {
+            return super.onCreateOptionsMenu(menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mProxy == null) {
+            return super.onOptionsItemSelected(item);
+        }
+        return false;
     }
 }

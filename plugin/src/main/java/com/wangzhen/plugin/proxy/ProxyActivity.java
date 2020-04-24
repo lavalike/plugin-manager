@@ -8,6 +8,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -178,5 +183,85 @@ public class ProxyActivity extends FragmentActivity {
             mLifecycle.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        if (mLifecycle != null) {
+            mLifecycle.onSaveInstanceState(outState);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (mLifecycle != null) {
+            mLifecycle.onNewIntent(intent);
+        }
+        super.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (mLifecycle != null) {
+            mLifecycle.onRestoreInstanceState(savedInstanceState);
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mLifecycle != null) {
+            return mLifecycle.onTouchEvent(event);
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (mLifecycle != null) {
+            return mLifecycle.onKeyUp(keyCode, event);
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
+        if (mLifecycle != null) {
+            mLifecycle.onWindowAttributesChanged(params);
+        }
+        super.onWindowAttributesChanged(params);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (mLifecycle != null) {
+            mLifecycle.onWindowFocusChanged(hasFocus);
+        }
+        super.onWindowFocusChanged(hasFocus);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mLifecycle != null) {
+            mLifecycle.onBackPressed();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mLifecycle != null) {
+            return mLifecycle.onCreateOptionsMenu(menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mLifecycle != null) {
+            return mLifecycle.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
