@@ -15,8 +15,7 @@ import com.wangzhen.plugin.callback.Plugin;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
 import com.wangzhen.plugin.helper.CopyUtils;
 import com.wangzhen.plugin.helper.FileUtils;
-import com.wangzhen.plugin.hook.AMSHookHelper;
-import com.wangzhen.plugin.hook.DexHookHelper;
+import com.wangzhen.plugin.hook.HookHelper;
 import com.wangzhen.plugin.hook.ServiceManager;
 import com.wangzhen.plugin.provider.ContextProvider;
 
@@ -100,8 +99,6 @@ public final class PluginManager implements Plugin {
 
     private void applyPlugin(String path) {
         try {
-            AMSHookHelper.hook();
-
             mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
@@ -109,13 +106,13 @@ public final class PluginManager implements Plugin {
             mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
             mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES);
 
-            mContext.setTheme(mPackageArchiveInfo.applicationInfo.theme);
-            mTheme = PluginManager.getInstance().getPluginResources().newTheme();
-            mTheme.setTo(mContext.getTheme());
+//            mContext.setTheme(mPackageArchiveInfo.applicationInfo.theme);
+//            mTheme = PluginManager.getInstance().getPluginResources().newTheme();
+//            mTheme.setTo(mContext.getTheme());
 
-            //hook ams, implement service plugin
+            HookHelper.hook();
             File file = new File(path);
-            DexHookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
+            HookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
             ServiceManager.getInstance().parseServices();
 
             runOnUiThread(new Runnable() {

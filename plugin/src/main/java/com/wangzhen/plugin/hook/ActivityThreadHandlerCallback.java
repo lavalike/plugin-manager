@@ -34,7 +34,7 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
             Field intentField = obj.getClass().getDeclaredField("intent");
             intentField.setAccessible(true);
             Intent proxyIntent = (Intent) intentField.get(obj);
-            Intent realIntent = proxyIntent.getParcelableExtra(AMSHookHelper.EXTRA_TARGET_INTENT);
+            Intent realIntent = proxyIntent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
             if (realIntent != null) {
                 proxyIntent.setComponent(realIntent.getComponent());
                 proxyIntent.putExtra("data", "restored by hook");

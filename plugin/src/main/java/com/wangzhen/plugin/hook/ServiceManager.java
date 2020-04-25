@@ -42,7 +42,7 @@ public class ServiceManager {
      * @param startId     startId
      */
     public void onStartCommand(Intent proxyIntent, int flags, int startId) {
-        Intent targetIntent = proxyIntent.getParcelableExtra(AMSHookHelper.EXTRA_TARGET_INTENT);
+        Intent targetIntent = proxyIntent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
         if (targetIntent == null) {
             return;
         }

@@ -33,7 +33,7 @@ class IActivityManagerHandler implements InvocationHandler {
             // replace target service with local ProxyService to handle all lifecycle callbacks
             newIntent.setComponent(new ComponentName(ContextProvider.sContext.getPackageName(), ProxyService.class.getName()));
             // save target service info to intent extra
-            newIntent.putExtra(AMSHookHelper.EXTRA_TARGET_INTENT, compatIntent(integerIntentPair.second));
+            newIntent.putExtra(HookHelper.EXTRA_TARGET_INTENT, compatIntent(integerIntentPair.second));
             // replace the intent to cheat AMS
             args[integerIntentPair.first] = newIntent;
             return method.invoke(mRaw, args);
@@ -53,7 +53,7 @@ class IActivityManagerHandler implements InvocationHandler {
                 // replace target service with local ProxyService to handle all lifecycle callbacks
                 newIntent.setComponent(new ComponentName(ContextProvider.sContext, STUB_CLASS));
                 // save target service info to intent extra
-                newIntent.putExtra(AMSHookHelper.EXTRA_TARGET_INTENT, integerIntentPair.second);
+                newIntent.putExtra(HookHelper.EXTRA_TARGET_INTENT, integerIntentPair.second);
                 // replace the intent to cheat AMS
                 args[integerIntentPair.first] = newIntent;
             }
