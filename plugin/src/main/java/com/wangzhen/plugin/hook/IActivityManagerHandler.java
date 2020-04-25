@@ -27,6 +27,7 @@ class IActivityManagerHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Log.e("TAG", "-> invoke : " + method.getName());
         if ("startService".equals(method.getName())) {
             Pair<Integer, Intent> integerIntentPair = findFirstIntentOfArgs(args);
             Intent newIntent = new Intent();

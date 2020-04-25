@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * ActivityThreadHandlerCallback
@@ -19,18 +20,45 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-        // 9.0以前100
-        // 9.0以后159
-        if (msg.what == 100 || msg.what == 159) {
-            handleLaunchActivity(msg);
+        switch (msg.what) {
+            case 100:
+                // 9.0以前100
+                handleLaunch(msg);
+                break;
+            case 159:
+                // 9.0以后159
+                handleLaunchV28(msg);
+                break;
         }
         handler.handleMessage(msg);
         return true;
     }
 
-    private void handleLaunchActivity(Message msg) {
-        Object obj = msg.obj;//ActivityClientRecord
+    private void handleLaunchV28(Message msg) {
         try {
+            Object obj = msg.obj;
+            Field field = obj.getClass().getDeclaredField("mActivityCallbacks");
+            field.setAccessible(true);
+            List<Object> mActivityCallbacks = (List<Object>) field.get(obj);
+            if (mActivityCallbacks.size() > 0) {
+                String className = "android.app.servertransaction.LaunchActivityItem";
+                if (className.equals(mActivityCallbacks.get(0).getClass().getCanonicalName())) {
+                    Object object = mActivityCallbacks.get(0);
+                    Field intentField = obj.getClass().getDeclaredField("mIntent");
+                    intentField.setAccessible(true);
+                    Intent intent = (Intent) intentField.get(object);
+                    Intent target = intent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
+                    intent.setComponent(target.getComponent());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleLaunch(Message msg) {
+        try {
+            Object obj = msg.obj;//ActivityClientRecord
             Field intentField = obj.getClass().getDeclaredField("intent");
             intentField.setAccessible(true);
             Intent proxyIntent = (Intent) intentField.get(obj);
@@ -39,8 +67,8 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
                 proxyIntent.setComponent(realIntent.getComponent());
                 proxyIntent.putExtra("data", "restored by hook");
             }
-        } catch (Exception ignore) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
