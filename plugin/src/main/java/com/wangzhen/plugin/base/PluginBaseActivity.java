@@ -23,4 +23,10 @@ public class PluginBaseActivity extends FragmentActivity {
         AssetManager assets = PluginManager.getInstance().getAssets();
         return assets != null ? assets : super.getAssets();
     }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme = PluginManager.getInstance().getTheme();
+        return theme != null ? theme : super.getTheme();
+    }
 }

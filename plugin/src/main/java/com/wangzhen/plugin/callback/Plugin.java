@@ -79,4 +79,11 @@ public interface Plugin {
      * @return asset manager
      */
     AssetManager getAssets();
+
+    /**
+     * get plugin theme
+     *
+     * @return theme
+     */
+    Resources.Theme getTheme();
 }

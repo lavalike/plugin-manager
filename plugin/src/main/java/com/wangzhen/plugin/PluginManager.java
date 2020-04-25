@@ -40,6 +40,7 @@ public final class PluginManager implements Plugin {
     private PluginLoadCallback mCallback;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AssetManager mAssetManager;
+    private Resources.Theme mTheme;
 
     static {
         sInstance = new PluginManager();
@@ -108,6 +109,10 @@ public final class PluginManager implements Plugin {
             mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
             mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES);
 
+            mContext.setTheme(mPackageArchiveInfo.applicationInfo.theme);
+            mTheme = PluginManager.getInstance().getPluginResources().newTheme();
+            mTheme.setTo(mContext.getTheme());
+
             //hook ams, implement service plugin
             File file = new File(path);
             DexHookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
@@ -166,6 +171,11 @@ public final class PluginManager implements Plugin {
     @Override
     public AssetManager getAssets() {
         return mAssetManager;
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return mTheme;
     }
 
     private void runOnUiThread(Runnable runnable) {
