@@ -12,6 +12,8 @@
         <activity android:name=".base.PluginBaseActivity" />
 
         <service android:name=".proxy.ProxyService" />
+        
+        <activity android:name=".StubActivity" />
     </application>
 
 </manifest>

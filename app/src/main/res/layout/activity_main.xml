@@ -19,6 +19,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:onClick="openSchemeActivity"
+        android:text="scheme activity" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:onClick="loadAssetPlugin"
         android:text="加载asset插件" />
 

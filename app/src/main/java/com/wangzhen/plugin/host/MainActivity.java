@@ -231,4 +231,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(mReceiver);
     }
+
+    public void openSchemeActivity(View view) {
+        startActivity(new Intent(this, SchemeActivity.class));
+    }
 }

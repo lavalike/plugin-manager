@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
  */
 class IActivityManagerHandler implements InvocationHandler {
     private Object mRaw;
+    private static final String STUB_CLASS = "com.wangzhen.plugin.StubActivity";
 
     public IActivityManagerHandler(Object raw) {
         mRaw = raw;
@@ -45,6 +46,17 @@ class IActivityManagerHandler implements InvocationHandler {
 
         if ("startActivity".equals(method.getName())) {
             Log.e("TAG", "hook -> startActivity");
+            Pair<Integer, Intent> integerIntentPair = findFirstIntentOfArgs(args);
+            ComponentName component = integerIntentPair.second.getComponent();
+            if (component != null && !component.getClassName().equals(STUB_CLASS)) {
+                Intent newIntent = new Intent();
+                // replace target service with local ProxyService to handle all lifecycle callbacks
+                newIntent.setComponent(new ComponentName(ContextProvider.sContext, STUB_CLASS));
+                // save target service info to intent extra
+                newIntent.putExtra(AMSHookHelper.EXTRA_TARGET_INTENT, integerIntentPair.second);
+                // replace the intent to cheat AMS
+                args[integerIntentPair.first] = newIntent;
+            }
         }
 
         return method.invoke(mRaw, args);
