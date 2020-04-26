@@ -36,19 +36,22 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
 
     private void handleLaunchV28(Message msg) {
         try {
-            Object obj = msg.obj;
-            Field field = obj.getClass().getDeclaredField("mActivityCallbacks");
+            Object mClientTransaction = msg.obj;
+            Field field = mClientTransaction.getClass().getDeclaredField("mActivityCallbacks");
             field.setAccessible(true);
-            List<Object> mActivityCallbacks = (List<Object>) field.get(obj);
+            List mActivityCallbacks = (List) field.get(mClientTransaction);
             if (mActivityCallbacks.size() > 0) {
                 String className = "android.app.servertransaction.LaunchActivityItem";
                 if (className.equals(mActivityCallbacks.get(0).getClass().getCanonicalName())) {
-                    Object object = mActivityCallbacks.get(0);
-                    Field intentField = object.getClass().getDeclaredField("mIntent");
+                    Object mLaunchActivityItem = mActivityCallbacks.get(0);
+                    Field intentField = mLaunchActivityItem.getClass().getDeclaredField("mIntent");
                     intentField.setAccessible(true);
-                    Intent intent = (Intent) intentField.get(object);
+                    Intent intent = (Intent) intentField.get(mLaunchActivityItem);
                     Intent target = intent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
-                    intent.setComponent(target.getComponent());
+                    if (target != null) {
+                        intent.setComponent(target.getComponent());
+                        intent.putExtra("data", "restored by hook v28+");
+                    }
                 }
             }
         } catch (Exception e) {
@@ -58,14 +61,14 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
 
     private void handleLaunch(Message msg) {
         try {
-            Object obj = msg.obj;//ActivityClientRecord
-            Field intentField = obj.getClass().getDeclaredField("intent");
+            Object mActivityClientRecord = msg.obj;//ActivityClientRecord
+            Field intentField = mActivityClientRecord.getClass().getDeclaredField("intent");
             intentField.setAccessible(true);
-            Intent proxyIntent = (Intent) intentField.get(obj);
-            Intent realIntent = proxyIntent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
-            if (realIntent != null) {
-                proxyIntent.setComponent(realIntent.getComponent());
-                proxyIntent.putExtra("data", "restored by hook");
+            Intent intent = (Intent) intentField.get(mActivityClientRecord);
+            Intent target = intent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
+            if (target != null) {
+                intent.setComponent(target.getComponent());
+                intent.putExtra("data", "restored by hook v28-");
             }
         } catch (Exception e) {
             e.printStackTrace();
