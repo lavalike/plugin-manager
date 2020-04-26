@@ -151,9 +151,9 @@ public final class PluginManager implements Plugin {
     }
 
     @Override
-    public void startActivity(String packageName, String className) {
+    public void startActivity(String className) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(packageName, className));
+        intent.setComponent(new ComponentName(mContext, className));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
@@ -161,7 +161,7 @@ public final class PluginManager implements Plugin {
     @Override
     public void startActivity() {
         if (mPackageArchiveInfo != null) {
-            startActivity(mPackageArchiveInfo.packageName, mPackageArchiveInfo.activities[0].name);
+            startActivity(mPackageArchiveInfo.activities[0].name);
         }
     }
 

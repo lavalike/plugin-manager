@@ -63,10 +63,9 @@ public interface Plugin {
     /**
      * start activity according to given class name
      *
-     * @param packageName package name
-     * @param className   class name
+     * @param className plugin class name
      */
-    void startActivity(String packageName, String className);
+    void startActivity(String className);
 
     /**
      * start the first activity declared in AndroidManifest.xml

@@ -53,14 +53,8 @@ class IActivityManagerHandler implements InvocationHandler {
                 Intent newIntent = new Intent();
                 // replace target service with local StubActivity
                 newIntent.setComponent(new ComponentName(ContextProvider.sContext, STUB_CLASS));
-                // replace plugin package name with host package name
-                Intent second = integerIntentPair.second;
-                if (second.getComponent() != null) {
-                    String className = second.getComponent().getClassName();
-                    second.setComponent(new ComponentName(ContextProvider.sContext.getPackageName(), className));
-                }
                 // save target service info to intent extra
-                newIntent.putExtra(HookHelper.EXTRA_TARGET_INTENT, second);
+                newIntent.putExtra(HookHelper.EXTRA_TARGET_INTENT, integerIntentPair.second);
                 // replace the intent to cheat AMS
                 args[integerIntentPair.first] = newIntent;
             }
