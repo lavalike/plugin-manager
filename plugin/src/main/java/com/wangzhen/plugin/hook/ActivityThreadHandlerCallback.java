@@ -44,7 +44,7 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
                 String className = "android.app.servertransaction.LaunchActivityItem";
                 if (className.equals(mActivityCallbacks.get(0).getClass().getCanonicalName())) {
                     Object object = mActivityCallbacks.get(0);
-                    Field intentField = obj.getClass().getDeclaredField("mIntent");
+                    Field intentField = object.getClass().getDeclaredField("mIntent");
                     intentField.setAccessible(true);
                     Intent intent = (Intent) intentField.get(object);
                     Intent target = intent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
