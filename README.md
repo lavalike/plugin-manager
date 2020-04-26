@@ -1,7 +1,7 @@
-## plugin-manager
-动态apk插件化框架
+### 动态apk插件化框架plugin-manager
+> 支持范围(API21 - API28)
 
-#### 宿主
+#### 一、宿主
 支持方法
 ```java
 public interface Plugin {
@@ -28,9 +28,9 @@ PluginManager.getInstance().load(path, new PluginLoadCallback() {
 });
 ``` 
 
-#### 插件
+#### 二、插件
 ❗️️插件Activity需继承**com.wangzhen.plugin.base.PluginBaseActivity**  
-> 为防止出现异常，获取Context请使用PluginBaseActivity#getActivity()
+> 暂无法初始化插件Application，请注意相关逻辑的初始化
 
 示例
 ```java
@@ -38,8 +38,6 @@ public class BaseActivity extends PluginBaseActivity {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        DarkStatusBar.get().fitDark(getActivity());
     }
-
 }
 ```
