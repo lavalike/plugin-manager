@@ -47,5 +47,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
+    implementation 'com.github.dimeno-tech:dimeno-network:0.0.3'
+    implementation 'com.github.dimeno-tech:dimeno-permission:0.0.2'
+
     implementation project(path: ':plugin')
 }
