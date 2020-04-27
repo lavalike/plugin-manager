@@ -32,7 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="loadAssetPlugin"
-        android:text="加载asset插件" />
+        android:text="加载asset插件1" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="loadAssetPlugin2"
+        android:text="加载asset插件2" />
 
     <Button
         android:layout_width="match_parent"
