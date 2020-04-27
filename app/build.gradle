@@ -50,5 +50,7 @@ dependencies {
     implementation 'com.github.dimeno-tech:dimeno-network:0.0.3'
     implementation 'com.github.dimeno-tech:dimeno-permission:0.0.2'
 
+    implementation 'com.tencent.bugly:crashreport:3.2.1'
+
     implementation project(path: ':plugin')
 }
