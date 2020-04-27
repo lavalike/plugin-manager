@@ -13,13 +13,14 @@ import com.wangzhen.plugin.proxy.ProxyService;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import static com.wangzhen.plugin.hook.HookHelper.STUB_CLASS;
+
 /**
  * invocation handler of IActivityManager
  * Created by wangzhen on 2020/4/18.
  */
 class IActivityManagerHandler implements InvocationHandler {
     private Object mRaw;
-    private static final String STUB_CLASS = "com.wangzhen.plugin.StubActivity";
 
     public IActivityManagerHandler(Object raw) {
         mRaw = raw;

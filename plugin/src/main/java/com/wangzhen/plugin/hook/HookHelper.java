@@ -1,7 +1,10 @@
 package com.wangzhen.plugin.hook;
 
+import android.app.Instrumentation;
 import android.os.Build;
 import android.os.Handler;
+
+import com.wangzhen.plugin.provider.ContextProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,14 +25,35 @@ import dalvik.system.DexFile;
  */
 public class HookHelper {
     public static final String EXTRA_TARGET_INTENT = "extra_target_intent";
+    public static final String STUB_CLASS = "com.wangzhen.plugin.StubActivity";
 
     public static void hook() {
         try {
             hookActivityManagerNative();
             hookSystemHandler();
+            if (Build.VERSION.SDK_INT >= 29) {
+                hookInstrumentation();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void hookInstrumentation() throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+        Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+        Field activityThreadField = activityThreadClass.getDeclaredField("sCurrentActivityThread");
+        activityThreadField.setAccessible(true);
+        //获取ActivityThread对象sCurrentActivityThread
+        Object activityThread = activityThreadField.get(null);
+
+        Field instrumentationField = activityThreadClass.getDeclaredField("mInstrumentation");
+        instrumentationField.setAccessible(true);
+        //从sCurrentActivityThread中获取成员变量mInstrumentation
+        Instrumentation instrumentation = (Instrumentation) instrumentationField.get(activityThread);
+        //创建代理对象InstrumentationProxy
+        InstrumentationProxy proxy = new InstrumentationProxy(instrumentation, ContextProvider.sContext.getPackageManager());
+        //将sCurrentActivityThread中成员变量mInstrumentation替换成代理类InstrumentationProxy
+        instrumentationField.set(activityThread, proxy);
     }
 
     private static void hookActivityManagerNative() throws ClassNotFoundException, IllegalAccessException, NoSuchFieldException {
