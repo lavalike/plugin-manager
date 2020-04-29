@@ -1,22 +1,22 @@
 package com.wangzhen.plugin.host;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dimeno.permission.PermissionManager;
+import com.dimeno.permission.callback.PermissionCallback;
 import com.wangzhen.download.DownloadClient;
 import com.wangzhen.download.bean.ParamsBody;
 import com.wangzhen.download.callback.OnDownloadCallback;
@@ -43,8 +43,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTvMsg;
-    private int REQUEST_CODE = 0;
     private BroadcastReceiver mReceiver;
+    private ProgressDialog mLoadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 if ("plugin-two".equals(intent.getAction())) {
                     Toast.makeText(context, "宿主收到插件广播 -> " + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
                 } else if ("launch_plugin".equals(intent.getAction())) {
-                    loadAssetPlugin(null);
+                    Toast.makeText(context, "宿主调起另一插件", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -76,46 +76,84 @@ public class MainActivity extends AppCompatActivity {
         mTvMsg.setText("Status:\n");
     }
 
-    public void loadAssetPlugin(View view) {
-        PluginManager.getInstance().loadAsset("plugin/census.apk", new PluginLoadCallback() {
-            @Override
-            public void onSuccess() {
-                mTvMsg.append("plugin-one.apk load success\n");
-                PluginManager.getInstance().startActivity();
-            }
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_scheme:
+                startActivity(new Intent(this, SchemeActivity.class));
+                break;
+            case R.id.btn_plugin1:
+                showLoading();
+                PluginManager.getInstance().loadAsset("plugin/census.apk", new PluginLoadCallback() {
+                    @Override
+                    public void onSuccess() {
+                        stopLoading();
+                        mTvMsg.append("plugin-one.apk load success\n");
+                        PluginManager.getInstance().startActivity();
+                    }
 
-            @Override
-            public void onFail(String error) {
-                mTvMsg.append("plugin-one.apk load fail: " + error + "\n");
-            }
-        });
-    }
+                    @Override
+                    public void onFail(String error) {
+                        stopLoading();
+                        mTvMsg.append("plugin-one.apk load fail: " + error + "\n");
+                    }
+                });
+                break;
+            case R.id.btn_plugin2:
+                showLoading();
+                PluginManager.getInstance().loadAsset("plugin/plugin-one.apk", new PluginLoadCallback() {
+                    @Override
+                    public void onSuccess() {
+                        stopLoading();
+                        mTvMsg.append("plugin-one.apk load success\n");
+                        PluginManager.getInstance().startActivity();
+                    }
 
-    public void loadAssetPlugin2(View view) {
-        PluginManager.getInstance().loadAsset("plugin/plugin-one.apk", new PluginLoadCallback() {
-            @Override
-            public void onSuccess() {
-                mTvMsg.append("plugin-one.apk load success\n");
-                PluginManager.getInstance().startActivity();
-            }
+                    @Override
+                    public void onFail(String error) {
+                        stopLoading();
+                        mTvMsg.append("plugin-one.apk load fail: " + error + "\n");
+                    }
+                });
+                break;
+            case R.id.btn_plugin_net:
+                PermissionManager.request(this, new PermissionCallback() {
+                    @Override
+                    public void onGrant(String[] permissions) {
+                        checkPluginVersion();
+                    }
 
-            @Override
-            public void onFail(String error) {
-                mTvMsg.append("plugin-one.apk load fail: " + error + "\n");
-            }
-        });
-    }
+                    @Override
+                    public void onDeny(String[] deniedPermissions, String[] neverAskPermissions) {
+                        Toast.makeText(MainActivity.this, "请开启存储权限", Toast.LENGTH_SHORT).show();
+                    }
 
-    public void loadNetPlugin(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PackageManager.PERMISSION_GRANTED != checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
-            } else {
-                checkPluginVersion();
-            }
-        } else {
-            checkPluginVersion();
+                    @Override
+                    public void onNotDeclared(String[] permissions) {
+
+                    }
+                }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                break;
         }
+    }
+
+    private void showLoading() {
+        if (mLoadingDialog != null) {
+            if (mLoadingDialog.isShowing()) {
+                mLoadingDialog.dismiss();
+            }
+            mLoadingDialog = null;
+        }
+        mLoadingDialog = new ProgressDialog(this);
+        mLoadingDialog.setCancelable(false);
+        mLoadingDialog.setCanceledOnTouchOutside(false);
+        mLoadingDialog.show();
+    }
+
+    private void stopLoading() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+
     }
 
     private void checkPluginVersion() {
@@ -229,24 +267,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (REQUEST_CODE == requestCode) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkPluginVersion();
-            } else {
-                Toast.makeText(this, "请开启存储权限", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-    }
-
-    public void openSchemeActivity(View view) {
-        startActivity(new Intent(this, SchemeActivity.class));
     }
 }
