@@ -42,6 +42,9 @@ public class ServiceManager {
      * @param startId     startId
      */
     public void onStartCommand(Intent proxyIntent, int flags, int startId) {
+        if (proxyIntent == null) {
+            return;
+        }
         Intent targetIntent = proxyIntent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
         if (targetIntent == null) {
             return;
