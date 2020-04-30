@@ -1,5 +1,5 @@
 ### 动态apk插件化框架plugin-manager
-> 支持范围(API21 - API28)
+> 支持范围：Android 5.0 +
 
 #### 一、宿主
 支持方法
