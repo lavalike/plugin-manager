@@ -1,4 +1,4 @@
-package com.wangzhen.plugin;
+package com.wangzhen.plugin.stub;
 
 import androidx.fragment.app.FragmentActivity;
 

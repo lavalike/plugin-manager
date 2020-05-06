@@ -13,8 +13,9 @@ import android.text.TextUtils;
 
 import com.wangzhen.plugin.callback.Plugin;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
-import com.wangzhen.plugin.helper.CopyUtils;
-import com.wangzhen.plugin.helper.FileUtils;
+import com.wangzhen.plugin.util.CopyUtils;
+import com.wangzhen.plugin.util.CustomClassLoader;
+import com.wangzhen.plugin.util.FileUtils;
 import com.wangzhen.plugin.hook.HookHelper;
 import com.wangzhen.plugin.hook.ServiceManager;
 import com.wangzhen.plugin.provider.ContextProvider;

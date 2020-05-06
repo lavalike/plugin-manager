@@ -1,4 +1,4 @@
-package com.wangzhen.plugin.helper;
+package com.wangzhen.plugin.util;
 
 import android.content.Context;
 

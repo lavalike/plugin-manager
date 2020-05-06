@@ -25,7 +25,7 @@ import dalvik.system.DexFile;
  */
 public class HookHelper {
     public static final String EXTRA_TARGET_INTENT = "extra_target_intent";
-    public static final String STUB_CLASS = "com.wangzhen.plugin.StubActivity";
+    public static final String STUB_CLASS = "com.wangzhen.plugin.stub.StubActivity";
 
     public static void hook() {
         try {

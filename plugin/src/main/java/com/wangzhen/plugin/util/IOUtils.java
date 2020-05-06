@@ -1,4 +1,4 @@
-package com.wangzhen.plugin.helper;
+package com.wangzhen.plugin.util;
 
 import java.io.Closeable;
 import java.io.IOException;

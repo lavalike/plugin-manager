@@ -22,7 +22,7 @@ import com.wangzhen.download.bean.ParamsBody;
 import com.wangzhen.download.callback.OnDownloadCallback;
 import com.wangzhen.plugin.PluginManager;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
-import com.wangzhen.plugin.helper.FileUtils;
+import com.wangzhen.plugin.util.FileUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
