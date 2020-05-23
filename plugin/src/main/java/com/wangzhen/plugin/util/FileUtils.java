@@ -44,12 +44,12 @@ public class FileUtils {
     }
 
     /**
-     * get library search dir
+     * get native library search dir
      *
      * @param context context
-     * @return library search dir
+     * @return native library search dir
      */
-    public static File getLibrarySearchDir(Context context) {
+    public static File getNativeLibraryDir(Context context) {
         return context.getDir("native_lib", Context.MODE_PRIVATE);
     }
 

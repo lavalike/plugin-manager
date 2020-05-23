@@ -13,12 +13,13 @@ import android.text.TextUtils;
 
 import com.wangzhen.plugin.callback.Plugin;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
-import com.wangzhen.plugin.util.CopyUtils;
-import com.wangzhen.plugin.util.CustomClassLoader;
-import com.wangzhen.plugin.util.FileUtils;
 import com.wangzhen.plugin.hook.HookHelper;
 import com.wangzhen.plugin.hook.ServiceManager;
 import com.wangzhen.plugin.provider.ContextProvider;
+import com.wangzhen.plugin.util.CopyUtils;
+import com.wangzhen.plugin.util.CustomClassLoader;
+import com.wangzhen.plugin.util.FileUtils;
+import com.wangzhen.plugin.util.SoLibManager;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -100,7 +101,8 @@ public final class PluginManager implements Plugin {
 
     private void applyPlugin(String path) {
         try {
-            mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
+            String nativeLibDir = FileUtils.getNativeLibraryDir(mContext).getAbsolutePath();
+            mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), nativeLibDir, mContext.getClassLoader());
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
             method.invoke(mAssetManager, path);
@@ -115,6 +117,8 @@ public final class PluginManager implements Plugin {
             File file = new File(path);
             HookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
             ServiceManager.getInstance().parseServices();
+
+            SoLibManager.get().copyPluginSoLib(mContext, path, nativeLibDir);
 
             runOnUiThread(new Runnable() {
                 @Override
