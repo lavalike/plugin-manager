@@ -78,10 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_scheme:
-                startActivity(new Intent(this, SchemeActivity.class));
-                break;
-            case R.id.btn_plugin1:
+            case R.id.btn_plugin_census:
                 showLoading();
                 PluginManager.getInstance().loadAsset("plugin/census.apk", new PluginLoadCallback() {
                     @Override
