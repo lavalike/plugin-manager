@@ -1,8 +1,11 @@
 package com.wangzhen.plugin.hook;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+
+import com.wangzhen.plugin.PluginManager;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -49,8 +52,12 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
                     Intent intent = (Intent) intentField.get(mLaunchActivityItem);
                     Intent target = intent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
                     if (target != null) {
-                        intent.setComponent(target.getComponent());
-                        intent.putExtra("data", "restored by hook v28+");
+                        ComponentName component = target.getComponent();
+                        if (component != null) {
+                            PluginManager.getInstance().resolveTheme(component.getClassName());
+                            intent.setComponent(component);
+                            intent.putExtra("data", "restored by hook v28+");
+                        }
                     }
                 }
             }
@@ -67,8 +74,12 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
             Intent intent = (Intent) intentField.get(mActivityClientRecord);
             Intent target = intent.getParcelableExtra(HookHelper.EXTRA_TARGET_INTENT);
             if (target != null) {
-                intent.setComponent(target.getComponent());
-                intent.putExtra("data", "restored by hook v28-");
+                ComponentName component = target.getComponent();
+                if (component != null) {
+                    PluginManager.getInstance().resolveTheme(component.getClassName());
+                    intent.setComponent(component);
+                    intent.putExtra("data", "restored by hook v28-");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

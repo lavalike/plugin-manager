@@ -3,6 +3,7 @@ package com.wangzhen.plugin;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -45,6 +46,8 @@ public final class PluginManager implements Plugin {
     static {
         sInstance = new PluginManager();
     }
+
+    private int mThemeRes;
 
     private PluginManager() {
         mContext = ContextProvider.sContext;
@@ -152,6 +155,7 @@ public final class PluginManager implements Plugin {
 
     @Override
     public void startActivity(String className) {
+        resolveTheme(className);
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(mContext, className));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -162,9 +166,13 @@ public final class PluginManager implements Plugin {
     public void startActivity() {
         if (mPackageArchiveInfo != null) {
             Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mPackageArchiveInfo.packageName);
+            String className;
             if (intent != null && intent.getComponent() != null) {
-                startActivity(intent.getComponent().getClassName());
+                className = intent.getComponent().getClassName();
+            } else {
+                className = mPackageArchiveInfo.activities[0].name;
             }
+            startActivity(className);
         }
     }
 
@@ -174,7 +182,24 @@ public final class PluginManager implements Plugin {
     }
 
     @Override
+    public void resolveTheme(String className) {
+        if (mPackageArchiveInfo != null) {
+            for (ActivityInfo info : mPackageArchiveInfo.activities) {
+                if (info.name.equals(className)) {
+                    mThemeRes = info.theme != 0 ? info.theme : mPackageArchiveInfo.applicationInfo.theme;
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
     public Resources.Theme getTheme() {
+        if (mThemeRes != 0) {
+            Resources.Theme theme = mPluginResources.newTheme();
+            theme.applyStyle(mThemeRes, true);
+            return theme;
+        }
         return null;
     }
 

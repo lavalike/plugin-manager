@@ -80,6 +80,13 @@ public interface Plugin {
     AssetManager getAssets();
 
     /**
+     * resolve theme from activity class name
+     *
+     * @param className activity class name
+     */
+    void resolveTheme(String className);
+
+    /**
      * get plugin theme
      *
      * @return theme

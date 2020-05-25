@@ -2,6 +2,7 @@ package com.wangzhen.plugin.hook;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,8 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
+
+import com.wangzhen.plugin.PluginManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,10 +40,13 @@ public class InstrumentationProxy extends Instrumentation {
         List<ResolveInfo> resolveInfo = mPackageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
         //判断启动的插件Activity是否在AndroidManifest.xml中注册过
         if (null == resolveInfo || resolveInfo.size() == 0) {
-            //保存目标插件
-            intent.putExtra(HookHelper.EXTRA_TARGET_INTENT, intent.getComponent().getClassName());
-            //设置为占坑Activity
-            intent.setClassName(who, STUB_CLASS);
+            ComponentName component = intent.getComponent();
+            if (component != null) {
+                //保存目标插件
+                intent.putExtra(HookHelper.EXTRA_TARGET_INTENT_NAME, component.getClassName());
+                //设置为占坑Activity
+                intent.setClassName(who, STUB_CLASS);
+            }
         }
 
         try {
@@ -60,8 +66,9 @@ public class InstrumentationProxy extends Instrumentation {
 
     public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException,
             IllegalAccessException, ClassNotFoundException {
-        String intentName = intent.getStringExtra(HookHelper.EXTRA_TARGET_INTENT);
+        String intentName = intent.getStringExtra(HookHelper.EXTRA_TARGET_INTENT_NAME);
         if (!TextUtils.isEmpty(intentName)) {
+            PluginManager.getInstance().resolveTheme(intentName);
             return super.newActivity(cl, intentName, intent);
         }
         return super.newActivity(cl, className, intent);
