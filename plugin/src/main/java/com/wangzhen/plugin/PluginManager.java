@@ -161,7 +161,10 @@ public final class PluginManager implements Plugin {
     @Override
     public void startActivity() {
         if (mPackageArchiveInfo != null) {
-            startActivity(mPackageArchiveInfo.activities[0].name);
+            Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mPackageArchiveInfo.packageName);
+            if (intent != null && intent.getComponent() != null) {
+                startActivity(intent.getComponent().getClassName());
+            }
         }
     }
 
