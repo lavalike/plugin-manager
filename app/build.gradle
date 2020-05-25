@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "com.wangzhen.plugin.host"
-        minSdkVersion 17
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -51,6 +51,8 @@ dependencies {
     implementation 'com.github.dimeno-tech:dimeno-permission:0.0.2'
 
     implementation 'com.tencent.bugly:crashreport:3.2.1'
+
+    implementation 'com.github.chezi008:AndroidMp3Recorder:v1.0.4'
 
     implementation project(path: ':plugin')
 }
