@@ -1,6 +1,7 @@
 package com.wangzhen.plugin.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -101,5 +102,30 @@ public class FileUtils {
             return file.delete();
         }
         return false;
+    }
+
+    /**
+     * update so last modified time
+     *
+     * @param cxt    context
+     * @param soName so name
+     * @param time   time
+     */
+    public static void setSoLastModifiedTime(Context cxt, String soName, long time) {
+        SharedPreferences prefs = cxt.getSharedPreferences("so_config",
+                Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+        prefs.edit().putLong(soName, time).apply();
+    }
+
+    /**
+     * get so last modified time
+     *
+     * @param cxt    context
+     * @param soName so name
+     */
+    public static long getSoLastModifiedTime(Context cxt, String soName) {
+        SharedPreferences prefs = cxt.getSharedPreferences("so_config",
+                Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+        return prefs.getLong(soName, 0);
     }
 }

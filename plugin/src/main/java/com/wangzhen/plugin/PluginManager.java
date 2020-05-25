@@ -41,7 +41,6 @@ public final class PluginManager implements Plugin {
     private PluginLoadCallback mCallback;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AssetManager mAssetManager;
-    private Resources.Theme mTheme;
 
     static {
         sInstance = new PluginManager();
@@ -102,23 +101,19 @@ public final class PluginManager implements Plugin {
     private void applyPlugin(String path) {
         try {
             String nativeLibDir = FileUtils.getNativeLibraryDir(mContext).getAbsolutePath();
-            mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), nativeLibDir, mContext.getClassLoader());
+            mPluginDexClassloader = new CustomClassLoader(path, FileUtils.getOptimizedDir(mContext).getAbsolutePath(), null, mContext.getClassLoader());
             mAssetManager = AssetManager.class.newInstance();
             Method method = AssetManager.class.getMethod("addAssetPath", String.class);
             method.invoke(mAssetManager, path);
             mPluginResources = new Resources(mAssetManager, mContext.getResources().getDisplayMetrics(), mContext.getResources().getConfiguration());
             mPackageArchiveInfo = mContext.getPackageManager().getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES);
 
-//            mContext.setTheme(mPackageArchiveInfo.applicationInfo.theme);
-//            mTheme = PluginManager.getInstance().getPluginResources().newTheme();
-//            mTheme.setTo(mContext.getTheme());
-
             HookHelper.hook();
             File file = new File(path);
             HookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
             ServiceManager.getInstance().parseServices();
 
-            SoLibManager.get().copyPluginSoLib(mContext, path, nativeLibDir);
+            SoLibManager.getSoLoader().copyPluginSoLib(mContext, path, nativeLibDir);
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -177,7 +172,7 @@ public final class PluginManager implements Plugin {
 
     @Override
     public Resources.Theme getTheme() {
-        return mTheme;
+        return null;
     }
 
     private void runOnUiThread(Runnable runnable) {
