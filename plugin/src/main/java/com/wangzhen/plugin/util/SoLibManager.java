@@ -1,6 +1,5 @@
 package com.wangzhen.plugin.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,36 +21,59 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * SoLibManager
+ * so library manager
  * Created by wangzhen on 2020/5/23.
  */
 public class SoLibManager {
     private static final String TAG = SoLibManager.class.getSimpleName();
-
-    /**
-     * So File executor
-     */
     private ExecutorService mSoExecutor = Executors.newCachedThreadPool();
-    /**
-     * single instance of the SoLoader
-     */
     private static SoLibManager sInstance = new SoLibManager();
-    /**
-     * app's lib dir
-     */
     private static String sNativeLibDir = "";
 
     private SoLibManager() {
     }
 
-    public static SoLibManager getSoLoader() {
+    public static SoLibManager get() {
         return sInstance;
     }
 
     /**
-     * get cpu name, according cpu type parse relevant so lib
+     * copy so lib to specify directory
      *
-     * @return ARM、ARMV7、X86、MIPS
+     * @param dexPath      plugin path
+     * @param nativeLibDir nativeLibDir
+     */
+    public void copy(Context context, String dexPath, String nativeLibDir) {
+        String cpuName = getCpuName();
+        String cpuArchitect = getCpuArch(cpuName);
+        sNativeLibDir = nativeLibDir;
+        Log.e(TAG, "cpuArchitect: " + cpuArchitect);
+        try {
+            ZipFile zipFile = new ZipFile(dexPath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry zipEntry = entries.nextElement();
+                if (zipEntry.isDirectory()) {
+                    continue;
+                }
+                String zipEntryName = zipEntry.getName();
+                if (zipEntryName.endsWith(".so") && zipEntryName.contains(cpuArchitect)) {
+                    final long lastModify = zipEntry.getTime();
+                    if (lastModify == FileUtils.getSoLastModifiedTime(context, zipEntryName)) {
+                        Log.e(TAG, "skip copying, the so lib already exists : " + zipEntryName);
+                        continue;
+                    }
+                    mSoExecutor.execute(new CopySoTask(context, zipFile, zipEntry, lastModify));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * get cpu name
      */
     private String getCpuName() {
         try {
@@ -72,7 +94,12 @@ public class SoLibManager {
         return null;
     }
 
-    @SuppressLint("DefaultLocale")
+    /**
+     * get cpu architecture by cpu name
+     *
+     * @param cpuName cpu name
+     * @return cpu architecture
+     */
     private String getCpuArch(String cpuName) {
         String cpuArchitect = CpuArch.CPU_ARMEABI;
         if (!TextUtils.isEmpty(cpuName)) {
@@ -88,47 +115,7 @@ public class SoLibManager {
     }
 
     /**
-     * copy so lib to specify directory(/data/data/host_pack_name/pluginlib)
-     *
-     * @param dexPath      plugin path
-     * @param nativeLibDir nativeLibDir
-     */
-    public void copyPluginSoLib(Context context, String dexPath, String nativeLibDir) {
-        String cpuName = getCpuName();
-        String cpuArchitect = getCpuArch(cpuName);
-
-        sNativeLibDir = nativeLibDir;
-        Log.e(TAG, "cpuArchitect: " + cpuArchitect);
-        long start = System.currentTimeMillis();
-        try {
-            ZipFile zipFile = new ZipFile(dexPath);
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry zipEntry = entries.nextElement();
-                if (zipEntry.isDirectory()) {
-                    continue;
-                }
-                String zipEntryName = zipEntry.getName();
-                if (zipEntryName.endsWith(".so") && zipEntryName.contains(cpuArchitect)) {
-                    final long lastModify = zipEntry.getTime();
-                    if (lastModify == FileUtils.getSoLastModifiedTime(context, zipEntryName)) {
-                        // exist and no change
-                        Log.e(TAG, "skip copying, the so lib is exist and not change: " + zipEntryName);
-                        continue;
-                    }
-                    mSoExecutor.execute(new CopySoTask(context, zipFile, zipEntry, lastModify));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        long end = System.currentTimeMillis();
-        Log.e(TAG, "### copy so time : " + (end - start) + " ms");
-    }
-
-    /**
-     * @author mrsimple
+     * task to copy so library
      */
     private static class CopySoTask implements Runnable {
 
@@ -146,24 +133,24 @@ public class SoLibManager {
             mLastModifyTime = lastModify;
         }
 
-        private String parseSoFileName(String zipEntryName) {
+        String parseSoFileName(String zipEntryName) {
             return zipEntryName.substring(zipEntryName.lastIndexOf("/") + 1);
         }
 
-        private void writeSoFile2LibDir() throws IOException {
-            InputStream is = null;
-            FileOutputStream fos = null;
-            is = mZipFile.getInputStream(mZipEntry);
-            fos = new FileOutputStream(new File(sNativeLibDir, mSoFileName));
-            copy(is, fos);
-//            mZipFile.close();
+        @Override
+        public void run() {
+            try {
+                copy(mZipFile.getInputStream(mZipEntry), new FileOutputStream(new File(sNativeLibDir, mSoFileName)));
+                FileUtils.setSoLastModifiedTime(mContext, mZipEntry.getName(), mLastModifyTime);
+            } catch (IOException ignore) {
+            }
         }
 
         /**
-         * 输入输出流拷贝
+         * copy so
          *
-         * @param is
-         * @param os
+         * @param is input stream
+         * @param os file output stream
          */
         void copy(InputStream is, OutputStream os) throws IOException {
             if (is == null || os == null)
@@ -172,33 +159,20 @@ public class SoLibManager {
             BufferedOutputStream bos = new BufferedOutputStream(os);
             int size = getAvailableSize(bis);
             byte[] buf = new byte[size];
-            int i = 0;
-            while ((i = bis.read(buf, 0, size)) != -1) {
-                bos.write(buf, 0, i);
+            int length;
+            while ((length = bis.read(buf, 0, size)) != -1) {
+                bos.write(buf, 0, length);
             }
             bos.flush();
             bos.close();
             bis.close();
         }
 
-        private int getAvailableSize(InputStream is) throws IOException {
+        int getAvailableSize(InputStream is) throws IOException {
             if (is == null)
                 return 0;
             int available = is.available();
             return available <= 0 ? 1024 : available;
-        }
-
-        @Override
-        public void run() {
-            try {
-                writeSoFile2LibDir();
-                FileUtils.setSoLastModifiedTime(mContext, mZipEntry.getName(), mLastModifyTime);
-                Log.e(TAG, "copy so lib success: " + mZipEntry.getName());
-            } catch (IOException e) {
-                Log.e(TAG, "copy so lib failed: " + e.toString());
-                e.printStackTrace();
-            }
-
         }
 
     }

@@ -113,7 +113,7 @@ public final class PluginManager implements Plugin {
             HookHelper.patchClassLoader(mContext.getClassLoader(), file, mContext.getFileStreamPath(file.getName() + ".odex"));
             ServiceManager.getInstance().parseServices();
 
-            SoLibManager.getSoLoader().copyPluginSoLib(mContext, path, nativeLibDir);
+            SoLibManager.get().copy(mContext, path, nativeLibDir);
 
             runOnUiThread(new Runnable() {
                 @Override
