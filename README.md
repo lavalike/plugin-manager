@@ -1,6 +1,9 @@
 ### 动态apk插件化框架plugin-manager
 > 支持范围：Android 5.0 +
 
+[![Platform](https://img.shields.io/badge/Platform-Android-00CC00.svg?style=flat)](https://www.android.com)
+[![](https://jitpack.io/v/lavalike/plugin-manager.svg)](https://jitpack.io/#lavalike/plugin-manager)
+
 #### 一、宿主
 支持方法
 ```java
