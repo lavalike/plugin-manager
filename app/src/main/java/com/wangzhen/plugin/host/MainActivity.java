@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPluginVersion() {
         Request request = new Request.Builder()
-                .url("http://192.168.188.132:8080/wangzhen/plugin/plugin.json")
+                .url("http://192.168.10.100:8080/wangzhen/plugin/plugin.json")
                 .build();
         new OkHttpClient().newCall(request).enqueue(new Callback() {
             @Override

@@ -1,12 +1,14 @@
-### 动态apk插件化框架plugin-manager
+# plugin-manager
+> 动态apk插件化框架
 > 支持范围：Android 5.0 +
 
 [![Platform](https://img.shields.io/badge/Platform-Android-00CC00.svg?style=flat)](https://www.android.com)
 [![](https://jitpack.io/v/lavalike/plugin-manager.svg)](https://jitpack.io/#lavalike/plugin-manager)
 
-#### 一、宿主
+### 宿主
 支持方法
-```java
+
+``` java
 public interface Plugin {
     void loadAsset(String path);
     void loadAsset(String path, PluginLoadCallback callback);
@@ -16,8 +18,10 @@ public interface Plugin {
     void startActivity();
 }
 ```
+
 示例
-```java
+
+``` java
 PluginManager.getInstance().load(path, new PluginLoadCallback() {
     @Override
     public void onSuccess() {
@@ -26,16 +30,17 @@ PluginManager.getInstance().load(path, new PluginLoadCallback() {
 
     @Override
     public void onFail(String error) {
-        
+
     }
 });
-``` 
+```
 
-#### 二、插件
-❗️️插件Activity需继承**com.wangzhen.plugin.base.PluginBaseActivity**  
-> 暂无法初始化插件Application，请注意相关逻辑的初始化
+### 插件
+❗️️插件Activity需继承 **PluginBaseActivity**
+> 暂不支持插件Application的初始化，请正确处理相关逻辑
 
 示例
+
 ```java
 public class BaseActivity extends PluginBaseActivity {
     @Override
