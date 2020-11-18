@@ -48,8 +48,8 @@ dependencies {
 
     implementation "com.wangzhen:download-client-android:0.0.2"
     implementation "com.wangzhen:router:0.0.1"
-    implementation 'com.github.dimeno-tech:dimeno-network:0.1.1'
-    implementation 'com.github.dimeno-tech:dimeno-permission:0.0.2'
+    implementation 'com.github.lavalike:network:0.0.1'
+    implementation 'com.github.lavalike:permission:0.0.1'
 
     implementation project(path: ':plugin')
 }

@@ -1,6 +1,5 @@
 package com.wangzhen.plugin.host;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,26 +14,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dimeno.permission.PermissionManager;
-import com.dimeno.permission.callback.PermissionCallback;
 import com.wangzhen.download.DownloadClient;
 import com.wangzhen.download.bean.ParamsBody;
 import com.wangzhen.download.callback.OnDownloadCallback;
+import com.wangzhen.network.callback.LoadingCallback;
 import com.wangzhen.plugin.PluginManager;
 import com.wangzhen.plugin.callback.PluginLoadCallback;
+import com.wangzhen.plugin.host.entity.VersionEntity;
+import com.wangzhen.plugin.host.network.PluginVersionTask;
 import com.wangzhen.plugin.util.FileUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * MainActivity
@@ -118,56 +108,30 @@ public class MainActivity extends AppCompatActivity {
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
-
     }
 
     private void checkPluginVersion() {
-        Request request = new Request.Builder()
-                .url("http://192.168.10.100:8080/wangzhen/plugin/plugin.json")
-                .build();
-        new OkHttpClient().newCall(request).enqueue(new Callback() {
+        new PluginVersionTask(new LoadingCallback<VersionEntity>() {
             @Override
-            public void onFailure(Call call, final IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTvMsg.append(e.getMessage() + "\n");
-                        mTvMsg.append("an error occur, load cache version\n");
-                        loadPlugin(getPluginCache());
-                    }
-                });
+            public void onSuccess(VersionEntity data) {
+                int newCode = data.version_code;
+                if (newCode > getPreferences().getInt("version_code", 0)) {
+                    mTvMsg.append("new version found\n");
+                    getPreferences().edit().putInt("version_code", newCode).apply();
+                    download(data.url);
+                } else {
+                    mTvMsg.append("no new version found, load cache version\n");
+                    loadPlugin(getPluginCache());
+                }
             }
 
             @Override
-            public void onResponse(Call call, final Response response) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (response.code() == 200 && response.body() != null) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response.body().string());
-                                int version_code = jsonObject.getInt("version_code");
-                                if (version_code > getPreferences().getInt("version_code", 0)) {
-                                    mTvMsg.append("new version found\n");
-                                    getPreferences().edit().putInt("version_code", version_code).apply();
-                                    download(jsonObject.getString("url"));
-                                } else {
-                                    mTvMsg.append("no new version found, load cache version\n");
-                                    loadPlugin(getPluginCache());
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            mTvMsg.append("an error occur, load cache version\n");
-                            loadPlugin(getPluginCache());
-                        }
-                    }
-                });
+            public void onError(int code, String message) {
+                mTvMsg.append(message + "\n");
+                mTvMsg.append("an error occur, load cache version\n");
+                loadPlugin(getPluginCache());
             }
-        });
+        }).setTag(this).exe();
     }
 
     private String getPluginCache() {
