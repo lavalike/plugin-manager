@@ -78,24 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_plugin_census:
-                showLoading();
-                PluginManager.getInstance().loadAsset("plugin/census.apk", new PluginLoadCallback() {
-                    @Override
-                    public void onSuccess() {
-                        stopLoading();
-                        mTvMsg.append("plugin-one.apk load success\n");
-                        PluginManager.getInstance().startActivity();
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        stopLoading();
-                        mTvMsg.append("plugin-one.apk load fail: " + error + "\n");
-                    }
-                });
-                break;
-            case R.id.btn_plugin2:
+            case R.id.btn_plugin:
                 showLoading();
                 PluginManager.getInstance().loadAsset("plugin/plugin-one.apk", new PluginLoadCallback() {
                     @Override
@@ -113,22 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_plugin_net:
-                PermissionManager.request(this, new PermissionCallback() {
-                    @Override
-                    public void onGrant(String[] permissions) {
-                        checkPluginVersion();
-                    }
-
-                    @Override
-                    public void onDeny(String[] deniedPermissions, String[] neverAskPermissions) {
-                        Toast.makeText(MainActivity.this, "请开启存储权限", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNotDeclared(String[] permissions) {
-
-                    }
-                }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                checkPluginVersion();
                 break;
         }
     }

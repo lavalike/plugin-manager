@@ -33,14 +33,14 @@ import dalvik.system.DexClassLoader;
  * Created by wangzhen on 2020/4/1.
  */
 public final class PluginManager implements Plugin {
-    private Context mContext;
-    private static Plugin sInstance;
+    private final Context mContext;
+    private static final Plugin sInstance;
     private DexClassLoader mPluginDexClassloader;
     private Resources mPluginResources;
     private PackageInfo mPackageArchiveInfo;
     private String mPath;
     private PluginLoadCallback mCallback;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     private AssetManager mAssetManager;
 
     static {
